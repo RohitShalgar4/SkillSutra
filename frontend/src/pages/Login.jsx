@@ -10,9 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useLoginUserMutation, useRegisterUserMutation } from "@/features/api/authApi";
+import {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+} from "@/features/api/authApi";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const Login = () => {
   const [signupInput, setSignupInput] = useState({
@@ -24,11 +28,21 @@ const Login = () => {
 
   const [
     registerUser,
-    { data: registerData, error: registerError, isLoading: registerIsLoading, isSuccess: registerIsSuccess },
+    {
+      data: registerData,
+      error: registerError,
+      isLoading: registerIsLoading,
+      isSuccess: registerIsSuccess,
+    },
   ] = useRegisterUserMutation();
   const [
     loginUser,
-    { data: loginData, error: loginError, isLoading: loginIsLoading, isSuccess: loginIsSuccess },
+    {
+      data: loginData,
+      error: loginError,
+      isLoading: loginIsLoading,
+      isSuccess: loginIsSuccess,
+    },
   ] = useLoginUserMutation();
 
   const changeInputHandler = (e, type) => {
@@ -46,6 +60,29 @@ const Login = () => {
     const response = await action(inputData);
     console.log(response); // Debug API response
   };
+
+  useEffect(() => {
+    if(registerIsSuccess && registerData){
+      toast.success(registerData.message || "Signup successful.")
+    }
+    if(registerError){
+      toast.error(registerError.data.message || "Signup Failed");
+    }
+    if(loginIsSuccess && loginData){
+      toast.success(loginData.message || "Login successful.");
+      
+    }
+    if(loginError){ 
+      toast.error(loginError.data.message || "login Failed");
+    }
+  }, [
+    loginIsLoading,
+    registerIsLoading,
+    loginData,
+    registerData,
+    loginError,
+    registerError,
+  ]);
 
   return (
     <div className="flex items-center w-full justify-center mt-20">
@@ -98,10 +135,14 @@ const Login = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button disabled={registerIsLoading} onClick={() => handleRegistration("signup")}>
+              <Button
+                disabled={registerIsLoading}
+                onClick={() => handleRegistration("signup")}
+              >
                 {registerIsLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
+                    wait
                   </>
                 ) : (
                   "Signup"
@@ -143,10 +184,14 @@ const Login = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button disabled={loginIsLoading} onClick={() => handleRegistration("login")}>
+              <Button
+                disabled={loginIsLoading}
+                onClick={() => handleRegistration("login")}
+              >
                 {loginIsLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
+                    wait
                   </>
                 ) : (
                   "Login"
