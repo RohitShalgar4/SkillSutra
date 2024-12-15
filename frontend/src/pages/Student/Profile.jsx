@@ -64,7 +64,7 @@ const Profile = () => {
 
   if (isLoading) return <h1>Profile Loading...</h1>;
 
-  const { user } = data;
+  const user = data && data.user;
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-10">
@@ -140,8 +140,8 @@ const Profile = () => {
                 </div>
               </div>
               <DialogFooter>
-                <Button disabled={isLoading} onClick={updateUserHandler}>
-                  {isLoading ? (
+                <Button disabled={updateUserIsLoading} onClick={updateUserHandler}>
+                  {updateUserIsLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
                       wait
