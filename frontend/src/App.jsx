@@ -1,11 +1,11 @@
 import "./App.css";
-import Navbar from "./components/Navbar";
-import { Button } from "./components/ui/button";
-import HeroSection from "./pages/Student/heroscetion";
+import HeroSection from "./pages/Student/HeroSection";
 import Login from "./pages/Login";
 import MainLayout from "./Layout/mainlayout";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Courses from "./pages/Student/courses";
+import Courses from "./pages/Student/Courses";
+import MyLearning from "./pages/Student/MyLearning";
+import Profile from "./pages/Student/Profile";
 
 const appRouter = createBrowserRouter([
   {
@@ -17,21 +17,27 @@ const appRouter = createBrowserRouter([
         element: (
           <>
             <HeroSection />
-            <Courses/>
+            <Courses />
           </>
         ),
       },
       {
         path: "login",
-        element: <Login />
-      }
+        element: <Login />,
+      },
+      {
+        path: "my-learning",
+        element: <MyLearning />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
     ],
   },
 ]);
 
-
 function App() {
-
   return (
     <main>
       <RouterProvider router={appRouter} />
