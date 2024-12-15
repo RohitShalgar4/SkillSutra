@@ -22,7 +22,7 @@ export const createCourse = async (req,res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            message:"Failedto create course"
+            message:"Failed to create course"
         })
     }
   
