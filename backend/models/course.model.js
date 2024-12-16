@@ -4,6 +4,7 @@ const courseSchema = new mongoose.Schema({
     courseTitle:{
         type:String,
    },
+   subTitle: {type:String}, 
    description:{
     type:String,
    },
@@ -18,7 +19,7 @@ const courseSchema = new mongoose.Schema({
    coursePrice:{
     type:Number,
    },
-   courseThumnail:{
+   courseThumbnail:{
     type:String,
    },
    enrolledStudents:[
