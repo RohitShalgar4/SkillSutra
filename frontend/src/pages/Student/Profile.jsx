@@ -29,7 +29,7 @@ const Profile = () => {
     updateUser,
     {
       data: updateUserData,
-      isLoading: updateUserIsLoading,
+      isLoading: updateUserisLoading,
       isError,
       error,
       isSuccess,
@@ -140,8 +140,8 @@ const Profile = () => {
                 </div>
               </div>
               <DialogFooter>
-                <Button disabled={updateUserIsLoading} onClick={updateUserHandler}>
-                  {updateUserIsLoading ? (
+                <Button disabled={updateUserisLoading} onClick={updateUserHandler}>
+                  {updateUserisLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
                       wait
