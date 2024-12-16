@@ -32,7 +32,7 @@ const Login = () => {
     {
       data: registerData,
       error: registerError,
-      isLoading: registerIsLoading,
+      isLoading: registerisLoading,
       isSuccess: registerIsSuccess,
     },
   ] = useRegisterUserMutation();
@@ -41,7 +41,7 @@ const Login = () => {
     {
       data: loginData,
       error: loginError,
-      isLoading: loginIsLoading,
+      isLoading: loginisLoading,
       isSuccess: loginIsSuccess,
     },
   ] = useLoginUserMutation();
@@ -79,8 +79,8 @@ const Login = () => {
       toast.error(loginError.data.message || "login Failed");
     }
   }, [
-    loginIsLoading,
-    registerIsLoading,
+    loginisLoading,
+    registerisLoading,
     loginData,
     registerData,
     loginError,
@@ -139,10 +139,10 @@ const Login = () => {
             </CardContent>
             <CardFooter>
               <Button
-                disabled={registerIsLoading}
+                disabled={registerisLoading}
                 onClick={() => handleRegistration("signup")}
               >
-                {registerIsLoading ? (
+                {registerisLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
                     wait
@@ -188,10 +188,10 @@ const Login = () => {
             </CardContent>
             <CardFooter>
               <Button
-                disabled={loginIsLoading}
+                disabled={loginisLoading}
                 onClick={() => handleRegistration("login")}
               >
-                {loginIsLoading ? (
+                {loginisLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
                     wait
