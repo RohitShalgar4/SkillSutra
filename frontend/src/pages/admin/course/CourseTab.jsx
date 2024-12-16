@@ -41,10 +41,10 @@ const CourseTab = () => {
     const selectThumbnail = (e) => {
         const file = e.target.files?.[0];
         if (file) {
-          setInput({ ...input, courseThumbnail: file });
-          const fileReader = new FileReader();
-          fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
-          fileReader.readAsDataURL(file);
+            setInput({ ...input, courseThumbnail: file });
+            const fileReader = new FileReader();
+            fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
+            fileReader.readAsDataURL(file);
         }
     };
 
@@ -174,8 +174,8 @@ const CourseTab = () => {
                             {
                                 isLoding ? (
                                     <>
-                                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                                    Please Wait
+                                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                                        Please Wait
                                     </>
                                 ) : "Save"
                             }
