@@ -18,15 +18,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEditCourseMutation, useGetCourseByIdQuery } from "@/features/api/courseApi.js";
+import {
+  useEditCourseMutation,
+  useGetCourseByIdQuery,
+  usePublishCourseMutation,
+} from "@/features/api/courseApi.js";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const CourseTab = () => {
-  const isPublished = false;
-
   const [input, setInput] = useState({
     courseTitle: "",
     subTitle: "",
@@ -39,12 +41,15 @@ const CourseTab = () => {
 
   const params = useParams();
   const courseId = params.courseId;
-  const { data: courseByIdData, isLoading:courseByIdLoading , refetch} =
-    useGetCourseByIdQuery(courseId,{refetchOnMountOrArgChange:true});
+  const {
+    data: courseByIdData,
+    isLoading: courseByIdLoading,
+    refetch,
+  } = useGetCourseByIdQuery(courseId, { refetchOnMountOrArgChange: true });
 
   useEffect(() => {
-    if (courseByIdData?.course) {  
-        const course = courseByIdData?.course;
+    if (courseByIdData?.course) {
+      const course = courseByIdData?.course;
       setInput({
         courseTitle: course.courseTitle,
         subTitle: course.subTitle,
@@ -57,12 +62,9 @@ const CourseTab = () => {
     }
   }, [courseByIdData]);
 
-  
- 
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
- 
-
+  const [publishCourse, {}] = usePublishCourseMutation();
 
   const [editCourse, { data, isLoading, isSuccess, error }] =
     useEditCourseMutation();
@@ -100,7 +102,19 @@ const CourseTab = () => {
     formData.append("coursePrice", input.coursePrice);
     formData.append("courseThumbnail", input.courseThumbnail);
     await editCourse({ formData, courseId });
-  }
+  };
+
+  const publishStatusHandler = async (action) => {
+    try {
+      const response = await publishCourse({ courseId, query: action });
+      if (response.data) {
+        refetch();
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to publish or unpublish course");
+    }
+  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -111,7 +125,7 @@ const CourseTab = () => {
     }
   }, [isSuccess, error]);
 
-  if(courseByIdLoading) return <h1>Loading...</h1>
+  if (courseByIdLoading) return <h1>Loading...</h1>;
 
   return (
     <Card>
@@ -123,8 +137,16 @@ const CourseTab = () => {
           </CardDescription>
         </div>
         <div className="space-x-2">
-          <Button variant="outline">
-            {isPublished ? "Unpublished" : "Publish"}
+          <Button
+            disabled={courseByIdData?.course.lectures.length === 0}
+            variant="outline"
+            onClick={() =>
+              publishStatusHandler(
+                courseByIdData?.course.isPublished ? "false" : "true"
+              )
+            }
+          >
+            {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
           </Button>
           <Button>Remove Course</Button>
         </div>
