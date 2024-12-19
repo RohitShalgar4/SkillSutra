@@ -40,6 +40,7 @@
     "react-quill": "^2.0.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.0.2",
+    "recharts": "^2.15.0",
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"
@@ -57,6 +58,6 @@
     "globals": "15.13.0",
     "postcss": "8.4.49",
     "tailwindcss": "^3.4.16",
-    "vite": "^6.0.3"
+    "vite": "^6.0.4"
   }
 }
