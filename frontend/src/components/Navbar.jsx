@@ -82,7 +82,7 @@ const Navbar = () => {
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                {user.role === "Instructor" && (
+                {user?.role === "instructor" && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem><Link to="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
@@ -112,8 +112,8 @@ const Navbar = () => {
 
 export default Navbar;
 
-const MobileNavbar = () => {
-  const role = "instructor";
+const MobileNavbar = ({user}) => {
+  const navigate = useNavigate();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -127,19 +127,19 @@ const MobileNavbar = () => {
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
-          <SheetTitle>SkillSutra</SheetTitle>
+          <SheetTitle><Link to="/">SkillSutra</Link></SheetTitle>
           <DarkMode />
         </SheetHeader>
         <Separator className="mr-2" />
         <nav className="flex flex-col space-y-4">
-          <span>My Learning</span>
-          <span>Edit Profile</span>
+        <Link to="/my-learning">My Learning</Link>
+        <Link to="/profile">Edit Profile</Link>
           <p>Log out</p>
         </nav>
-        {role === "instructor" && (
+        {user?.role === "instructor" && (
           <SheetFooter>
             <SheetClose asChild>
-              <Button type="submit">Dashboard</Button>
+              <Button type="submit" onClick={()=> navigate("/admin/dashboard")}>Dashboard</Button>
             </SheetClose>
           </SheetFooter>
         )}
