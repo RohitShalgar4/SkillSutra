@@ -50,9 +50,11 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <School size={"30"} />
           <Link to="/">
-            <h1 className="hidden md:block font-extrabold text-2xl">
-              SkillSutra
-            </h1>
+            <img
+              src="/SkillSutra Logo.jpg"
+              alt="SkillSutra Logo"
+              className="hidden md:block w-40 h-15"
+            />
           </Link>
         </div>
         {/* User icons and dark mode icon  */}
@@ -112,7 +114,7 @@ const Navbar = () => {
 
 export default Navbar;
 
-const MobileNavbar = ({user}) => {
+const MobileNavbar = ({ user }) => {
   const navigate = useNavigate();
   return (
     <Sheet>
@@ -132,14 +134,14 @@ const MobileNavbar = ({user}) => {
         </SheetHeader>
         <Separator className="mr-2" />
         <nav className="flex flex-col space-y-4">
-        <Link to="/my-learning">My Learning</Link>
-        <Link to="/profile">Edit Profile</Link>
+          <Link to="/my-learning">My Learning</Link>
+          <Link to="/profile">Edit Profile</Link>
           <p>Log out</p>
         </nav>
         {user?.role === "instructor" && (
           <SheetFooter>
             <SheetClose asChild>
-              <Button type="submit" onClick={()=> navigate("/admin/dashboard")}>Dashboard</Button>
+              <Button type="submit" onClick={() => navigate("/admin/dashboard")}>Dashboard</Button>
             </SheetClose>
           </SheetFooter>
         )}
