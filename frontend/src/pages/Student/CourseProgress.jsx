@@ -11,6 +11,7 @@ import { CheckCircle, CheckCircle2, CirclePlay } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useGenerateCertificateMutation } from "@/features/api/certificateApi";
 
 const CourseProgress = () => {
   const params = useParams();
@@ -27,10 +28,9 @@ const CourseProgress = () => {
     inCompleteCourse,
     { data: markInCompleteData, isSuccess: inCompletedSuccess },
   ] = useInCompleteCourseMutation();
+  const [generateCertificate] = useGenerateCertificateMutation();
 
   useEffect(() => {
-    console.log(markCompleteData);
-
     if (completedSuccess) {
       refetch();
       toast.success(markCompleteData.message);
@@ -46,12 +46,8 @@ const CourseProgress = () => {
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Failed to load course details</p>;
 
-  console.log(data);
-
   const { courseDetails, progress, completed } = data.data;
   const { courseTitle } = courseDetails;
-
-  // initialze the first lecture is not exist
   const initialLecture =
     currentLecture || (courseDetails.lectures && courseDetails.lectures[0]);
 
@@ -63,32 +59,58 @@ const CourseProgress = () => {
     await updateLectureProgress({ courseId, lectureId });
     refetch();
   };
-  // Handle select a specific lecture to watch
+
   const handleSelectLecture = (lecture) => {
     setCurrentLecture(lecture);
     handleLectureProgress(lecture._id);
   };
 
-
   const handleCompleteCourse = async () => {
     await completeCourse(courseId);
   };
+
   const handleInCompleteCourse = async () => {
     await inCompleteCourse(courseId);
   };
 
+  const handleGetCertificate = async () => {
+    try {
+      const blob = await generateCertificate(courseId).unwrap();
+      console.log('Certificate blob:', blob);
+      
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'certificate.pdf');
+      
+      // Append to body, click, and clean up
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast.success("Certificate downloaded successfully!");
+    } catch (error) {
+      console.error('Certificate error:', error);
+      toast.error("Failed to generate certificate");
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-4">
-      {/* Display course name  */}
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">{courseTitle}</h1>
         <Button
           onClick={completed ? handleInCompleteCourse : handleCompleteCourse}
           variant={completed ? "outline" : "default"}
+          disabled
         >
           {completed ? (
             <div className="flex items-center">
-              <CheckCircle className="h-4 w-4 mr-2" /> <span>Completed</span>{" "}
+              <CheckCircle className="h-4 w-4 mr-2" /> <span>Completed</span>
             </div>
           ) : (
             "Mark as completed"
@@ -96,21 +118,26 @@ const CourseProgress = () => {
         </Button>
       </div>
 
+      {completed && (
+        <Button
+          onClick={handleGetCertificate}
+          className="bg-green-500 hover:bg-green-600 text-white mb-4"
+        >
+          Get Certificate
+        </Button>
+      )}
+
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Video section  */}
         <div className="flex-1 md:w-3/5 h-fit rounded-lg shadow-lg p-4">
-          <div>
-            <video
-              src={currentLecture?.videoUrl || initialLecture.videoUrl}
-              controls
-              className="w-full h-auto md:rounded-lg"
-              onPlay={() =>
-                handleLectureProgress(currentLecture?._id || initialLecture._id)
-              }
-            />
-          </div>
-          {/* Display current watching lecture title */}
-          <div className="mt-2 ">
+          <video
+            src={currentLecture?.videoUrl || initialLecture.videoUrl}
+            controls
+            className="w-full h-auto md:rounded-lg"
+            onPlay={() =>
+              handleLectureProgress(currentLecture?._id || initialLecture._id)
+            }
+          />
+          <div className="mt-2">
             <h3 className="font-medium text-lg">
               {`Lecture ${
                 courseDetails.lectures.findIndex(
@@ -123,7 +150,7 @@ const CourseProgress = () => {
             </h3>
           </div>
         </div>
-        {/* Lecture Sidebar  */}
+
         <div className="flex flex-col w-full md:w-2/5 border-t md:border-t-0 md:border-l border-gray-200 md:pl-4 pt-4 md:pt-0">
           <h2 className="font-semibold text-xl mb-4">Course Lecture</h2>
           <div className="flex-1 overflow-y-auto">
@@ -132,7 +159,7 @@ const CourseProgress = () => {
                 key={lecture._id}
                 className={`mb-3 hover:cursor-pointer transition transform ${
                   lecture._id === currentLecture?._id
-                    ? "bg-gray-200 dark:dark:bg-gray-800"
+                    ? "bg-gray-200 dark:bg-gray-800"
                     : ""
                 } `}
                 onClick={() => handleSelectLecture(lecture)}
