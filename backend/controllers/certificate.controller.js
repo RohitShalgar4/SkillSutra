@@ -229,7 +229,7 @@ export const generateCertificate = async (req, res) => {
         doc.font('Helvetica-Bold')
            .fontSize(11)
            .fillColor(textDark)
-           .text(`SKILL-${certificate.certificateNumber}`, borderWidth + 60, bottomSectionY + 15);
+           .text(`${certificate.certificateNumber}`, borderWidth + 60, bottomSectionY + 15);
 
         doc.font('Helvetica')
            .fontSize(11)
@@ -291,6 +291,53 @@ export const generateCertificate = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to generate certificate",
+            error: error.message
+        });
+    }
+};
+
+export const validateCertificate = async (req, res) => {
+    try {
+        const { certificateNumber } = req.params;
+
+        // Find the certificate and populate user and course details
+        const certificate = await Certificate.findOne({ certificateNumber })
+            .populate('userId', 'username')
+            .populate('courseId', 'courseTitle courseLevel category');
+
+        if (!certificate) {
+            return res.status(404).json({
+                success: false,
+                message: "Invalid Certificate Number"
+            });
+        }
+
+        const user = await User.findOne(certificate.userId);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Invalid User ID"
+            });
+        }
+
+        // Return the certificate details
+        return res.status(200).json({
+            success: true,
+            data: {
+                username: user.name,
+                courseTitle: certificate.courseId.courseTitle,
+                courseLevel: certificate.courseId.courseLevel,
+                category: certificate.courseId.category,
+                completionDate: certificate.completionDate
+            }
+        });
+        console.log(res.data);
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Error validating certificate",
             error: error.message
         });
     }

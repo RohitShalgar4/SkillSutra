@@ -1,53 +1,11 @@
-import React, { useState, createContext, useContext, useEffect } from 'react';
-import { Search, CheckCircle, XCircle, Award, User, Calendar, Clock } from 'lucide-react';
-
-// Theme Context (same as your ThemeProvider)
-const initialState = {
-  theme: "system",
-  setTheme: () => null,
-};
-
-const ThemeProviderContext = createContext(initialState);
-
-const useTheme = () => {
-  const context = useContext(ThemeProviderContext);
-  if (context === undefined) {
-    // If no theme provider, return default values
-    return { theme: "light", setTheme: () => {} };
-  }
-  return context;
-};
+import { useState } from 'react';
+import { Search, CheckCircle, XCircle, Award } from 'lucide-react';
+import axios from 'axios';
 
 const CertificateValidator = () => {
-  const { theme } = useTheme();
   const [certificateId, setCertificateId] = useState('');
   const [validationResult, setValidationResult] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  // Mock database of certificates
-  const certificateDatabase = {
-    'CERT-2024-001': {
-      username: 'John Smith',
-      title: 'Advanced React Development',
-      category: 'Web Development',
-      courseLevel: 'Advanced',
-      dateOfCompletion: '2024-03-15'
-    },
-    'CERT-2024-002': {
-      username: 'Maria Garcia',
-      title: 'Full Stack Web Development',
-      category: 'Web Development',
-      courseLevel: 'Intermediate',
-      dateOfCompletion: '2024-02-20'
-    },
-    'CERT-2024-003': {
-      username: 'David Wilson',
-      title: 'Data Science with Python',
-      category: 'Data Science',
-      courseLevel: 'Beginner',
-      dateOfCompletion: '2024-01-10'
-    }
-  };
 
   const handleValidation = async (e) => {
     if (e) e.preventDefault();
@@ -55,24 +13,29 @@ const CertificateValidator = () => {
 
     setLoading(true);
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const result = certificateDatabase[certificateId.toUpperCase()];
-    
-    if (result) {
-      setValidationResult({
-        found: true,
-        data: result
-      });
-    } else {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/v1/certificates/validate/${certificateId}`);
+      
+      if (response.data.success) {
+        setValidationResult({
+          found: true,
+          data: response.data.data
+        });
+      } else {
+        setValidationResult({
+          found: false,
+          message: response.data.message
+        });
+      }
+    } catch (error) {
       setValidationResult({
         found: false,
-        message: 'Certificate not found in our database'
+        message: error.response?.data?.message || 'Error validating certificate'
       });
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
+    console.log(validationResult.data);
   };
 
   const formatDate = (dateString) => {
@@ -112,7 +75,7 @@ const CertificateValidator = () => {
                   id="certificateId"
                   value={certificateId}
                   onChange={(e) => setCertificateId(e.target.value)}
-                  placeholder="Enter certificate ID (e.g., CERT-2024-001)"
+                  placeholder="Enter certificate ID (e.g., SKILL-2024-00123)"
                   className="w-full px-4 py-3 pl-12 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
@@ -171,7 +134,7 @@ const CertificateValidator = () => {
                       
                       <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
                         <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Course Title</label>
-                        <p className="text-xl font-semibold text-gray-900 dark:text-white">{validationResult.data.title}</p>
+                        <p className="text-xl font-semibold text-gray-900 dark:text-white">{validationResult.data.courseTitle}</p>
                       </div>
                       
                       <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
@@ -194,7 +157,7 @@ const CertificateValidator = () => {
                     <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg text-center">
                       <label className="block text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">Date of Completion</label>
                       <p className="text-2xl font-bold text-blue-800 dark:text-blue-300">
-                        {formatDate(validationResult.data.dateOfCompletion)}
+                        {formatDate(validationResult.data.completionDate)}
                       </p>
                     </div>
                   </div>
@@ -207,28 +170,12 @@ const CertificateValidator = () => {
                 <h2 className="text-2xl font-bold text-red-800 dark:text-red-400 mb-2">Certificate Not Found</h2>
                 <p className="text-red-600 dark:text-red-300 text-lg">{validationResult.message}</p>
                 <p className="text-gray-500 dark:text-gray-400 mt-4">
-                  Please check the certificate ID and try again. Make sure you've entered the complete ID.
+                  Please check the certificate ID and try again. Make sure you&apos;ve entered the complete ID.
                 </p>
               </div>
             )}
           </div>
         )}
-
-        {/* Sample Certificate IDs */}
-        <div className="mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sample Certificate IDs for Testing:</h3>
-          <div className="flex flex-wrap gap-2">
-            {Object.keys(certificateDatabase).map((id) => (
-              <button
-                key={id}
-                onClick={() => setCertificateId(id)}
-                className="px-3 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md text-sm transition-colors"
-              >
-                {id}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
