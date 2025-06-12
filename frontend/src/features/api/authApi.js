@@ -9,6 +9,7 @@ export const authApi = createApi({
     baseUrl: USER_API,
     credentials: "include",
   }),
+  tagTypes: ['User'],
   endpoints: (builder) => ({
     registerUser: builder.mutation({
       query: (inputData) => ({
@@ -28,35 +29,39 @@ export const authApi = createApi({
           const result = await queryFulfilled;
           dispatch(userLoggedIn({ user: result.data.user }));
         } catch (error) {
-          console.log(error);
+          console.error('Login failed:', error);
         }
       },
+      invalidatesTags: ['User'],
     }),
     logoutUser: builder.mutation({
       query: () => ({
         url: "logout",
-        method:"GET"
-      })
+        method: "GET"
+      }),
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          await queryFulfilled;
+          dispatch(userLoggedOut());
+        } catch (error) {
+          console.error('Logout failed:', error);
+        }
+      },
+      invalidatesTags: ['User'],
     }),
-    async onQueryStarted(_, { queryFulfilled, dispatch }) {
-      try {
-        const result = await queryFulfilled;
-        dispatch(userLoggedOut);
-      } catch (error) {
-        console.log(error);
-      }
-    },
     loadUser: builder.query({
       query: () => ({
         url: "profile",
         method: "GET",
       }),
+      providesTags: ['User'],
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
           dispatch(userLoggedIn({ user: result.data.user }));
         } catch (error) {
-          console.log(error);
+          console.error('Load user failed:', error);
+          dispatch(userLoggedOut());
         }
       },
     }),
@@ -65,11 +70,20 @@ export const authApi = createApi({
         url: "profile/update",
         method: "PUT",
         body: formData,
-        credentials: "include",
       }),
+      invalidatesTags: ['User'],
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(userLoggedIn({ user: result.data.user }));
+        } catch (error) {
+          console.error('Update user failed:', error);
+        }
+      },
     }),
   }),
 });
+
 export const {
   useRegisterUserMutation,
   useLoginUserMutation,
