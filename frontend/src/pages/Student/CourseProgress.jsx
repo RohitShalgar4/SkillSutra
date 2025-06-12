@@ -11,7 +11,6 @@ import { CheckCircle, CheckCircle2, CirclePlay } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useGenerateCertificateMutation } from "@/features/api/certificateApi";
 
 const CourseProgress = () => {
   const params = useParams();
@@ -28,7 +27,6 @@ const CourseProgress = () => {
     inCompleteCourse,
     { data: markInCompleteData, isSuccess: inCompletedSuccess },
   ] = useInCompleteCourseMutation();
-  const [generateCertificate] = useGenerateCertificateMutation();
 
   useEffect(() => {
     if (completedSuccess) {
@@ -75,27 +73,30 @@ const CourseProgress = () => {
 
   const handleGetCertificate = async () => {
     try {
-      const blob = await generateCertificate(courseId).unwrap();
-      console.log('Certificate blob:', blob);
-      
-      // Create a URL for the blob
+      const response = await fetch(
+        `http://localhost:8080/api/v1/certificates/${courseId}/generate`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/pdf",
+          },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to download certificate");
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      
-      // Create a temporary link element
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', 'certificate.pdf');
-      
-      // Append to body, click, and clean up
+      link.setAttribute("download", `${courseTitle}-Certificate.pdf`);
       document.body.appendChild(link);
       link.click();
-      link.parentNode.removeChild(link);
+      link.remove();
       window.URL.revokeObjectURL(url);
-      
-      toast.success("Certificate downloaded successfully!");
+      toast.success("Certificate downloaded successfully");
     } catch (error) {
-      console.error('Certificate error:', error);
-      toast.error("Failed to generate certificate");
+      console.error("Certificate download error:", error);
+      toast.error("Failed to download certificate");
     }
   };
 
