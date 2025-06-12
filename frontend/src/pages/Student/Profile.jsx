@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Course from "./Course";
 import {
   useLoadUserQuery,
@@ -24,14 +24,13 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
 
-  const { data, isLoading, refetch } = useLoadUserQuery();
+  const { data, isLoading } = useLoadUserQuery(undefined, {
+    refetchOnMountOrArgChange: true
+  });
   const [
     updateUser,
     {
-      data: updateUserData,
       isLoading: updateUserisLoading,
-      isError,
-      error,
       isSuccess,
     },
   ] = useUpdateUserMutation();
@@ -42,29 +41,35 @@ const Profile = () => {
   };
 
   const updateUserHandler = async () => {
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("profilePhoto", profilePhoto);
-    await updateUser(formData);
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      if (profilePhoto) {
+        formData.append("profilePhoto", profilePhoto);
+      }
+      await updateUser(formData).unwrap();
+    } catch (error) {
+      toast.error(error.data?.message || "Failed to update profile");
+    }
   };
 
   useEffect(() => {
-    refetch();
-  }, []);
+    if (data?.user) {
+      setName(data.user.name || "");
+    }
+  }, [data]);
 
   useEffect(() => {
     if (isSuccess) {
-      refetch();
-      toast.success(data.message || "Profile updated.");
+      toast.success("Profile updated successfully");
+      setName("");
+      setProfilePhoto("");
     }
-    if (isError) {
-      toast.error(error.message || "Failed to update profile");
-    }
-  }, [error, updateUserData, isSuccess, isError]);
+  }, [isSuccess]);
 
   if (isLoading) return <h1>Profile Loading...</h1>;
 
-  const user = data && data.user;
+  const user = data?.user;
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-10">

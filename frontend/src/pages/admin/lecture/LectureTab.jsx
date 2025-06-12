@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from "@/features/api/courseApi";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -25,7 +25,6 @@ const LectureTab = () => {
   const [isFree, setIsFree] = useState(false);
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [btnDisable, setBtnDisable] = useState(true);
   const params = useParams();
   const { courseId, lectureId } = params;
 
@@ -42,7 +41,7 @@ const LectureTab = () => {
 
   const [edtiLecture, { data, isLoading, error, isSuccess }] =
     useEditLectureMutation();
-    const [removeLecture,{data:removeData, isLoading:removeLoading, isSuccess:removeSuccess}] = useRemoveLectureMutation();
+  const [removeLecture,{data:removeData, isLoading:removeLoading, isSuccess:removeSuccess}] = useRemoveLectureMutation();
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
@@ -58,19 +57,20 @@ const LectureTab = () => {
         });
 
         if (res.data.success) {
-          console.log(res);
           setUploadVideoInfo({
-            videoUrl: res.data.data.url,
+            videoUrl: res.data.data.secure_url,
             publicId: res.data.data.public_id,
           });
-          setBtnDisable(false);
           toast.success(res.data.message);
+        } else {
+          toast.error("Video upload failed");
         }
       } catch (error) {
-        console.log(error);
-        toast.error("video upload failed");
+        console.error('Video upload error:', error);
+        toast.error(error.response?.data?.message || "Video upload failed");
       } finally {
         setMediaProgress(false);
+        setUploadProgress(0);
       }
     }
   };
