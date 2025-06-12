@@ -23,6 +23,7 @@ import {
 } from "./components/ProtectedRoutes";
 import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
+import ValidateCertificate from "./pages/ValidateCertificate";
 
 const appRouter = createBrowserRouter([
   {
@@ -86,6 +87,14 @@ const appRouter = createBrowserRouter([
             <CourseProgress />
             </PurchaseCourseProtectedRoute>
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/validate",
+        element: (
+          <>
+            <ValidateCertificate/>
+          </>
         ),
       },
 
