@@ -3,6 +3,7 @@ import isAuthenticated from "../middleware/isAutheticated.js";
 import {
   createCourse,
   createLecture,
+  deleteCourse,
   editCourse,
   editLecture,
   getCourseById,
@@ -23,8 +24,9 @@ router.route("/published-courses").get(getPublishedCourse);
 router.route("/").get(isAuthenticated, getCreatorCourses);
 router
   .route("/:courseId")
-  .put(isAuthenticated, upload.single("courseThumbnail"), editCourse);
-router.route("/:courseId").get(isAuthenticated, getCourseById);
+  .put(isAuthenticated, upload.single("courseThumbnail"), editCourse)
+  .get(isAuthenticated, getCourseById)
+  .delete(isAuthenticated, deleteCourse);
 router.route("/:courseId/lecture").post(isAuthenticated, createLecture);
 router.route("/:courseId/lecture").get(isAuthenticated, getCourseLecture);
 router

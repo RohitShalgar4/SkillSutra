@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  useDeleteCourseMutation,
   useEditCourseMutation,
   useGetCourseByIdQuery,
   usePublishCourseMutation,
@@ -47,6 +48,9 @@ const CourseTab = () => {
     refetch,
   } = useGetCourseByIdQuery(courseId, { refetchOnMountOrArgChange: true });
 
+  const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation();
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (courseByIdData?.course) {
       const course = courseByIdData?.course;
@@ -63,7 +67,6 @@ const CourseTab = () => {
   }, [courseByIdData]);
 
   const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const navigate = useNavigate();
   const [publishCourse, {}] = usePublishCourseMutation();
 
   const [editCourse, { data, isLoading, isSuccess, error }] =
@@ -116,6 +119,18 @@ const CourseTab = () => {
     }
   };
 
+  const handleDeleteCourse = async () => {
+    try {
+      const response = await deleteCourse(courseId);
+      if (response.data) {
+        toast.success("Course deleted successfully");
+        navigate("/admin/course");
+      }
+    } catch (error) {
+      toast.error(error.data?.message || "Failed to delete course");
+    }
+  };
+
   useEffect(() => {
     if (isSuccess) {
       toast.success(data.message || "Course update.");
@@ -148,7 +163,20 @@ const CourseTab = () => {
           >
             {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
           </Button>
-          <Button>Remove Course</Button>
+          <Button
+            variant="destructive"
+            onClick={handleDeleteCourse}
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Remove Course"
+            )}
+          </Button>
         </div>
       </CardHeader>
       <CardContent>

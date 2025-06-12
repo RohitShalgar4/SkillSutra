@@ -151,9 +151,14 @@ export const editCourse = async (req, res) => {
       description,
       category,
       courseLevel,
-      coursePrice,
       courseThumbnail: courseThumbnail?.secure_url,
     };
+
+    // Only update coursePrice if it's provided and is a valid number
+    if (coursePrice !== undefined && !isNaN(Number(coursePrice))) {
+      updateData.coursePrice = Number(coursePrice);
+    }
+
     course = await Course.findByIdAndUpdate(courseId, updateData, {
       new: true,
     });
@@ -165,7 +170,7 @@ export const editCourse = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: "Failed to create course",
+      message: "Failed to update course",
     });
   }
 };
@@ -351,6 +356,40 @@ export const togglePublishCourse = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       message: "Failed to update status",
+    });
+  }
+};
+
+export const deleteCourse = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.id;
+
+    // Find the course and check if it belongs to the current user
+    const course = await Course.findOne({ _id: courseId, creator: userId });
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found or you don't have permission to delete it",
+      });
+    }
+
+    // Delete all lectures associated with the course
+    await Lecture.deleteMany({ _id: { $in: course.lectures } });
+
+    // Delete the course
+    await Course.findByIdAndDelete(courseId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Course deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete course",
     });
   }
 };
