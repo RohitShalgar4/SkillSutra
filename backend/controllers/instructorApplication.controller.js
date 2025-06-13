@@ -1,5 +1,7 @@
-import InstructorApplication from '../models/instructorApplication.model.js';
+import mongoose from 'mongoose';
 import axios from 'axios';
+import InstructorApplication from '../models/instructorApplication.model.js';
+import { User } from '../models/user.model.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -199,6 +201,22 @@ export const confirmApplication = async (req, res) => {
         success: false,
         message: 'Application not found or already processed'
       });
+    }
+
+    // If application is approved, update user role to Instructor
+    if (action === 'accept') {
+      const updatedUser = await User.findOneAndUpdate(
+        { email },
+        { $set: { role: 'Instructor' } },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        console.error('Failed to update user role for:', email);
+        // Continue with the process even if user update fails
+      } else {
+        console.log('Successfully updated user role to Instructor for:', email);
+      }
     }
 
     // Get email configuration

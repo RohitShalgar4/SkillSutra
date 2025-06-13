@@ -101,7 +101,7 @@ const Navbar = () => {
           ) : (
             <div className="flex items-center gap-2">
               <Button onClick={() => navigate("/validate")} className="px-5 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition duration-300 shadow-md dark:from-indigo-700 dark:to-blue-800 dark:hover:from-indigo-800 dark:hover:to-blue-900">
-                Validate User
+                Validate Certificate
               </Button>
               <Button variant="outline" onClick={() => navigate("/login")}>
                 Login
