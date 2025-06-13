@@ -16,6 +16,8 @@ import EditLecture from "./pages/admin/lecture/EditLecture";
 import CourseDetail from "./pages/Student/CourseDetail";
 import CourseProgress from "./pages/Student/CourseProgress";
 import SearchPage from "./pages/Student/SearchPage";
+import ChatBot from "./components/ChatBot/ChatBot";
+
 import {
   AdminRoute,
   AuthenticatedUser,
@@ -142,6 +144,8 @@ function App() {
     <main>
       <ThemeProvider>
         <RouterProvider router={appRouter} />
+        <ChatBot />
+
       </ThemeProvider>
     </main>
   );
