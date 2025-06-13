@@ -10,6 +10,7 @@ import purchaseRoute from "./routes/purchaseCourse.route.js";
 import courseProgressRoute from "./routes/courseProgress.route.js";
 import certificateRouter from "./routes/certificate.route.js";
 import chatRoutes from "./routes/chat.routes.js";
+import instructorApplicationRoute from "./routes/instructorApplication.route.js";
 
 dotenv.config({});
 connectDB();
@@ -22,7 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
   })
 );
@@ -35,6 +36,7 @@ app.use("/api/v1/purchase", purchaseRoute);
 app.use("/api/v1/progress", courseProgressRoute);
 app.use("/api/v1/certificates", certificateRouter);
 app.use("/api/v1/chat", chatRoutes);
+app.use("/api/v1/instructor-application", instructorApplicationRoute);
 
 app.listen(PORT, () => {
   console.log(`Server listen at port ${PORT}`);
