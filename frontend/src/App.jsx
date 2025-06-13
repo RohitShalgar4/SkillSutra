@@ -26,6 +26,8 @@ import {
 import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
 import { ThemeProvider } from "./components/ThemeProvider";
 import ValidateCertificate from "./pages/ValidateCertificate";
+import InstructorRequestForm from "./pages/InstructorRequestForm";
+import InstructorAcceptance from "./pages/InstructorAcceptance";
 
 const appRouter = createBrowserRouter([
   {
@@ -74,6 +76,14 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
+        path: "request-to-be-instructor",
+        element: (
+          <ProtectedRoute>
+            <InstructorRequestForm />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "course-detail/:courseId",
         element: (
           <ProtectedRoute>
@@ -98,6 +108,10 @@ const appRouter = createBrowserRouter([
             <ValidateCertificate/>
           </>
         ),
+      },
+      {
+        path: '/instructor-acceptance',
+        element: <InstructorAcceptance />
       },
 
       // admin routes start from here
