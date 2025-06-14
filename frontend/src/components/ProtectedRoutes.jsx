@@ -27,7 +27,7 @@ export const AdminRoute = ({children}) => {
         return <Navigate to="/login"/>
     }
 
-    if(user?.role !== "instructor"){
+    if(user?.role !== "Instructor"){
         return <Navigate to="/"/>
     }
 

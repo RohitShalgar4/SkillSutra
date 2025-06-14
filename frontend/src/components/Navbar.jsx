@@ -90,7 +90,7 @@ const Navbar = () => {
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                {user?.role === "instructor" && (
+                {user?.role === "Instructor" && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem><Link to="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
