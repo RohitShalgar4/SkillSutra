@@ -203,7 +203,6 @@ export const generateCertificate = async (req, res) => {
            .fillColor(textLight)
            .text('has successfully completed the course', centerX - 150, nameUnderlineY + 20, { width: 300, align: 'center' });
 
-           console.log(progress.courseId);
         // Course title
         const courseTitle = course.courseTitle || 'Web Development Course';
         doc.font('Helvetica-Bold')
@@ -252,7 +251,7 @@ export const generateCertificate = async (req, res) => {
         const imageWidth = 140;
         const imageHeight = 60;
         const imageX = signatureX + (180 - imageWidth) / 2;
-        const imageY = bottomSectionY - 45; // Move a bit higher above the line
+        const imageY = bottomSectionY - 45;
         
         doc.image(signatureImagePath, imageX, imageY, {
             width: imageWidth,
@@ -275,6 +274,20 @@ export const generateCertificate = async (req, res) => {
            .fontSize(11)
            .fillColor(textDark)
            .text('Director of SkillSutra', signatureX, bottomSectionY + 50, { width: 180, align: 'center' });
+
+        // Add stamp image in the center
+        const stampImagePath = path.resolve('assets/stamp.png');
+        const stampWidth = 80;
+        const stampHeight = 80;
+        const stampX = centerX - (stampWidth / 2);
+        const stampY = pageHeight - 140;
+
+        // Add stamp image with transparency
+        doc.image(stampImagePath, stampX, stampY, {
+            width: stampWidth,
+            height: stampHeight,
+            opacity: 0.7 // Make the stamp slightly transparent
+        });
 
         // Footer verification text
         doc.font('Helvetica')
