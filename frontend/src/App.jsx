@@ -28,6 +28,8 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import ValidateCertificate from "./pages/ValidateCertificate";
 import InstructorRequestForm from "./pages/InstructorRequestForm";
 import InstructorAcceptance from "./pages/InstructorAcceptance";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const appRouter = createBrowserRouter([
   {
@@ -48,6 +50,22 @@ const appRouter = createBrowserRouter([
         element: (
           <AuthenticatedUser>
             <Login />
+          </AuthenticatedUser>
+        ),
+      },
+      {
+        path: "forgot-password",
+        element: (
+          <AuthenticatedUser>
+            <ForgotPassword />
+          </AuthenticatedUser>
+        ),
+      },
+      {
+        path: "reset-password/:token",
+        element: (
+          <AuthenticatedUser>
+            <ResetPassword />
           </AuthenticatedUser>
         ),
       },

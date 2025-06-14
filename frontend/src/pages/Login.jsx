@@ -16,7 +16,7 @@ import {
 } from "@/features/api/authApi";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const Login = () => {
@@ -184,6 +184,14 @@ const Login = () => {
                   placeholder="xyz"
                   required
                 />
+              </div>
+              <div className="text-sm text-right">
+                <Link
+                  to="/forgot-password"
+                  className="text-blue-600 hover:underline"
+                >
+                  Forgot Password?
+                </Link>
               </div>
             </CardContent>
             <CardFooter>

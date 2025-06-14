@@ -11,6 +11,7 @@ import courseProgressRoute from "./routes/courseProgress.route.js";
 import certificateRouter from "./routes/certificate.route.js";
 import chatRoutes from "./routes/chat.routes.js";
 import instructorApplicationRoute from "./routes/instructorApplication.route.js";
+import passwordResetRoute from "./routes/passwordReset.route.js";
 
 dotenv.config({});
 connectDB();
@@ -37,6 +38,7 @@ app.use("/api/v1/progress", courseProgressRoute);
 app.use("/api/v1/certificates", certificateRouter);
 app.use("/api/v1/chat", chatRoutes);
 app.use("/api/v1/instructor-application", instructorApplicationRoute);
+app.use("/api/v1/password-reset", passwordResetRoute);
 
 app.listen(PORT, () => {
   console.log(`Server listen at port ${PORT}`);
