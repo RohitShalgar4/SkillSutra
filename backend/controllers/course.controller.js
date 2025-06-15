@@ -34,8 +34,8 @@ export const createCourse = async (req, res) => {
 
 export const searchCourse = async (req, res) => {
   try {
-    const { query = "", categories = [], sortByPrice = "" } = req.query;
-    console.log(categories);
+    const { query = "", categories = "", sortByPrice = "" } = req.query;
+    console.log("Search categories:", categories);
 
     // create search query
     const searchCriteria = {
@@ -48,8 +48,14 @@ export const searchCourse = async (req, res) => {
     };
 
     // if categories selected
-    if (categories.length > 0) {
-      searchCriteria.category = { $in: categories };
+    if (categories) {
+      const categoryArray = categories.split(',');
+      // Convert categories to case-insensitive regex patterns
+      const categoryPatterns = categoryArray.map(category => 
+        new RegExp(`^${category}$`, 'i')
+      );
+      
+      searchCriteria.category = { $in: categoryPatterns };
     }
 
     // define sorting order
@@ -66,10 +72,15 @@ export const searchCourse = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      courses: courses || [],
+      courses: courses || []
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to search courses",
+      error: error.message
+    });
   }
 };
 

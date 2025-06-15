@@ -16,7 +16,7 @@ const SearchResult = ({ course }) => {
         />
         <div className="flex flex-col gap-2">
           <h1 className="font-bold text-lg md:text-xl">{course.courseTitle}</h1>
-          <p className="text-sm text-gray-600">{course.subTitle}</p>
+          <p className="text-sm text-gray-600">{course.category}</p>
           <p className="text-sm text-gray-700">
             Intructor: <span className="font-bold">{course.creator?.name}</span>{" "}
           </p>
