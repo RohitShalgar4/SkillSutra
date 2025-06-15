@@ -8,14 +8,14 @@ export const register = async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({
-        sucess: false,
+        success: false,
         message: "All fields are required.",
       });
     }
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
-        sucess: false,
+        success: false,
         message: "User Already Exists.",
       });
     }
@@ -26,8 +26,8 @@ export const register = async (req, res) => {
       password: hashedPassword,
     });
     return res.status(201).json({
-      sucess: true,
-      message: "Account Created Sucessfully.",
+      success: true,
+      message: "Account Created Successfully.",
     });
   } catch (error) {
     console.log(error);
@@ -43,21 +43,21 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({
-        sucess: false,
+        success: false,
         message: "All fields are required.",
       });
     }
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
-        sucess: false,
+        success: false,
         message: "Incorrect password or email.",
       });
     }
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       return res.status(400).json({
-        sucess: false,
+        success: false,
         message: "Incorrect password or email.",
       });
     }

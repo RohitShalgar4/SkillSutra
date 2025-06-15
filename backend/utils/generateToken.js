@@ -12,7 +12,7 @@ export const generateToken = (res, user, message) => {
       maxAge: 24 * 60 * 60 * 1000,
     })
     .json({
-      sucess: true,
+      success: true,
       message,
       user,
     });
