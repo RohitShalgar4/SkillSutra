@@ -63,7 +63,9 @@ const CourseDetail = () => {
           <Card>
             <CardHeader>
               <CardTitle>Course Content</CardTitle>
-              <CardDescription>{course?.lectures.length} lectures</CardDescription>
+              <CardDescription>
+                {course?.lectures.length} lectures
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {course.lectures.map((lecture, index) => (

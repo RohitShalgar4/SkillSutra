@@ -35,15 +35,15 @@ const Navbar = () => {
   const logoutHandler = async () => {
     try {
       await logoutUser();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      toast.error('Failed to logout');
+      toast.error("Failed to logout");
     }
   };
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success('Logged out successfully');
+      toast.success("Logged out successfully");
     }
   }, [isSuccess]);
 
@@ -93,20 +93,27 @@ const Navbar = () => {
                 {user?.role === "Instructor" && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem><Link to="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to="/admin/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
                   </>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button onClick={() => navigate("/validate")} className="px-5 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition duration-300 shadow-md dark:from-indigo-700 dark:to-blue-800 dark:hover:from-indigo-800 dark:hover:to-blue-900">
+              <Button
+                onClick={() => navigate("/validate")}
+                className="px-5 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition duration-300 shadow-md dark:from-indigo-700 dark:to-blue-800 dark:hover:from-indigo-800 dark:hover:to-blue-900"
+              >
                 Validate Certificate
               </Button>
               <Button variant="outline" onClick={() => navigate("/login")}>
                 Login
               </Button>
-              <Button onClick={() => navigate("/login")}>Signup</Button>
+              <Button onClick={() => navigate("/login?tab=signup")}>
+                Signup
+              </Button>
             </div>
           )}
           <DarkMode />
@@ -138,7 +145,9 @@ const MobileNavbar = ({ user }) => {
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
-          <SheetTitle><Link to="/">SkillSutra</Link></SheetTitle>
+          <SheetTitle>
+            <Link to="/">SkillSutra</Link>
+          </SheetTitle>
           <DarkMode />
         </SheetHeader>
         <Separator className="mr-2" />
@@ -147,10 +156,15 @@ const MobileNavbar = ({ user }) => {
           <Link to="/profile">Edit Profile</Link>
           <p>Log out</p>
         </nav>
-        {user?.role === "instructor" && (
+        {user?.role === "Instructor" && (
           <SheetFooter>
             <SheetClose asChild>
-              <Button type="submit" onClick={() => navigate("/admin/dashboard")}>Dashboard</Button>
+              <Button
+                type="submit"
+                onClick={() => navigate("/admin/dashboard")}
+              >
+                Dashboard
+              </Button>
             </SheetClose>
           </SheetFooter>
         )}

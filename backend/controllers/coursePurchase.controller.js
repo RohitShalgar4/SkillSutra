@@ -18,7 +18,7 @@ export const createCheckoutSession = async (req, res) => {
       courseId,
       userId,
       amount: course.coursePrice,
-      status: "pending",
+      status: "completed",
     });
 
     // Create a Stripe checkout session
@@ -58,6 +58,31 @@ export const createCheckoutSession = async (req, res) => {
     // Save the purchase record
     newPurchase.paymentId = session.id;
     await newPurchase.save();
+
+    // Make all lectures visible
+    // if (newPurchase.courseId && newPurchase.courseId.lectures.length > 0) {
+    //   await Lecture.updateMany(
+    //     { _id: { $in: newPurchase.courseId.lectures } },
+    //     { $set: { isPreviewFree: true } }
+    //   );
+    //   console.log("Lectures updated for course:", newPurchase.courseId._id);
+    // }
+
+    // Update user's enrolledCourses
+    const updatedUser = await User.findByIdAndUpdate(
+      newPurchase.userId,
+      { $addToSet: { enrolledCourses: newPurchase.courseId._id } },
+      { new: true }
+    );
+    // console.log("User enrolled courses updated:", updatedUser._id);
+
+    // Update course's enrolledStudents
+    const updatedCourse = await Course.findByIdAndUpdate(
+      newPurchase.courseId._id,
+      { $addToSet: { enrolledStudents: newPurchase.userId } },
+      { new: true }
+    );
+    // console.log("Course enrolled students updated:", updatedCourse._id);
 
     return res.status(200).json({
       success: true,
@@ -164,7 +189,7 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
       .populate({ path: "lectures" });
 
     const purchased = await CoursePurchase.findOne({ userId, courseId });
-    console.log(purchased);
+    // console.log(purchased);
 
     if (!course) {
       return res.status(404).json({ message: "course not found!" });

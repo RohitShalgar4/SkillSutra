@@ -1,22 +1,52 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetPurchasedCoursesQuery } from "@/features/api/purchaseApi";
-import React from "react"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import React from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
 const Dashboard = () => {
-  const {data, isSuccess, isError, isLoading} = useGetPurchasedCoursesQuery();
+  const { data, isSuccess, isError, isLoading } = useGetPurchasedCoursesQuery();
 
-  if(isLoading) return <h1>Loading...</h1>
-  if(isError) return <h1 className="text-red-500">Failed to get purchased course.</h1>
+  if (isLoading) return <h1>Loading...</h1>;
+  if (isError)
+    return <h1 className="text-red-500">Failed to get purchased course.</h1>;
 
-  const {purchasedCourse} = data || [];
+  const { purchasedCourse } = data || [];
 
-  const courseData = purchasedCourse.map((course)=> ({
-    name:course.courseId.courseTitle,
-    price:course.courseId.coursePrice
-  }))
-  
-  const totalRevenue = purchasedCourse.reduce((acc,element) => acc+(element.amount || 0), 0);
-  const totalSales = purchasedCourse.length;
+  const courseData = purchasedCourse.map((course) => ({
+    name: course.courseId.courseTitle,
+    price: course.courseId.coursePrice,
+  }));
+
+  // Calculate total revenue from completed purchases
+  const totalRevenue = purchasedCourse.reduce((acc, element) => {
+    // Only count completed purchases
+    if (element.status === "completed") {
+      return acc + (element.amount || 0);
+    }
+    return acc;
+  }, 0);
+
+  const totalSales = purchasedCourse.filter(
+    (course) => course.status === "completed"
+  ).length;
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
 
   return (
     <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
@@ -34,7 +64,9 @@ const Dashboard = () => {
           <CardTitle>Total Revenue</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold text-blue-600">{totalRevenue}</p>
+          <p className="text-3xl font-bold text-green-600">
+            {formatCurrency(totalRevenue)}
+          </p>
         </CardContent>
       </Card>
 
@@ -52,18 +84,18 @@ const Dashboard = () => {
               <XAxis
                 dataKey="name"
                 stroke="#6b7280"
-                angle={-30} // Rotated labels for better visibility
+                angle={-30}
                 textAnchor="end"
-                interval={0} // Display all labels
+                interval={0}
               />
               <YAxis stroke="#6b7280" />
-              <Tooltip formatter={(value, name) => [`₹${value}`, name]} />
+              <Tooltip formatter={(value) => formatCurrency(value)} />
               <Line
                 type="monotone"
                 dataKey="price"
-                stroke="#4a90e2" // Changed color to a different shade of blue
+                stroke="#4a90e2"
                 strokeWidth={3}
-                dot={{ stroke: "#4a90e2", strokeWidth: 2 }} // Same color for the dot
+                dot={{ stroke: "#4a90e2", strokeWidth: 2 }}
               />
             </LineChart>
           </ResponsiveContainer>

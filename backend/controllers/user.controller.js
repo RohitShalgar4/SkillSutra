@@ -124,15 +124,21 @@ export const updateProfile = async (req, res) => {
         success: false,
       });
     }
-    // extract public id of the old image from the url is it exists;
-    if (user.photoUrl) {
-      const publicId = user.photoUrl.split("/").pop().split(".")[0]; // extract public id
-      deleteMediaFromCloudinary(publicId);
-    }
 
-    // upload new photo
-    const cloudResponse = await uploadMedia(profilePhoto.path);
-    const photoUrl = cloudResponse.secure_url;
+    let photoUrl = user.photoUrl;
+
+    // Only handle photo upload if a new photo is provided
+    if (profilePhoto) {
+      // extract public id of the old image from the url if it exists
+      if (user.photoUrl) {
+        const publicId = user.photoUrl.split("/").pop().split(".")[0]; // extract public id
+        deleteMediaFromCloudinary(publicId);
+      }
+
+      // upload new photo
+      const cloudResponse = await uploadMedia(profilePhoto.path);
+      photoUrl = cloudResponse.secure_url;
+    }
 
     const updatedData = { name, photoUrl };
     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
