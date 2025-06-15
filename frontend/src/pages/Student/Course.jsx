@@ -19,6 +19,9 @@ const Course = ({ course }) => {
         <h1 className="hover:underline font-bold text-lg truncate">
         {course.courseTitle}
         </h1>
+        <h1 className="hover:underline font-bold text-sm truncate">
+        {course.category}
+        </h1>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
