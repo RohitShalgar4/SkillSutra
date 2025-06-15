@@ -22,12 +22,18 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
-    credentials: true,
-  })
-);
+
+// Configure CORS with explicit settings
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Set-Cookie'],
+  maxAge: 86400 // 24 hours
+};
+
+app.use(cors(corsOptions));
 
 // API
 app.use("/api/v1/user", userRoute);
