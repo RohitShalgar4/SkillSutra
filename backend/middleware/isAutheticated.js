@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const isAuthenticated = (req, res, next) => {
+const isAuthenticated = async(req, res, next) => {
   try {
     const token = req.cookies.token;
 
@@ -11,7 +11,7 @@ const isAuthenticated = (req, res, next) => {
       });
     }
 
-    const decode = jwt.verify(token, process.env.SECRET_KEY);
+    const decode = await jwt.verify(token, process.env.SECRET_KEY);
     req.id = decode.userId; // Make sure you signed it as `{ userId: ... }`
     next();
 
