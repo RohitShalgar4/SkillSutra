@@ -8,7 +8,8 @@ export const generateToken = (res, user, message) => {
   // Set cookie options based on environment
   const cookieOptions = {
     httpOnly: true,
-    sameSite: "lax", // Changed from 'strict' to 'lax' for better compatibility
+    sameSite: "none",
+    secure: true,
     path: "/",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   };
