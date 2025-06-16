@@ -151,58 +151,69 @@ const MobileNavbar = ({ user }) => {
 
   return (
     <div className="flex items-center gap-2">
-      <Sheet>
-        <SheetTrigger asChild>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => navigate("/validate")}
-              className="px-5 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition duration-300 shadow-md dark:from-indigo-700 dark:to-blue-800 dark:hover:from-indigo-800 dark:hover:to-blue-900"
-            >
-              Validate
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/login")}>
-              Login
-            </Button>
-          </div>
-        </SheetTrigger>
-        <SheetTrigger asChild>
+      {!user ? (
+        // If no user, show only Validate and Login buttons
+        <>
           <Button
-            size="icon"
-            className="rounded-full hover:bg-gray-200"
-            variant="outline"
+            onClick={() => navigate("/validate")}
+            className="px-5 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition duration-300 shadow-md dark:from-indigo-700 dark:to-blue-800 dark:hover:from-indigo-800 dark:hover:to-blue-900"
           >
-            <Menu />
+            Validate
           </Button>
-        </SheetTrigger>
-        <SheetContent className="flex flex-col">
-          <SheetHeader className="flex flex-row items-center justify-between mt-2">
-            <SheetTitle>
-              <Link to="/">SkillSutra</Link>
-            </SheetTitle>
-            <DarkMode />
-          </SheetHeader>
-          <Separator className="mr-2" />
-          <nav className="flex flex-col space-y-4">
-            <Link to="/my-learning">My Learning</Link>
-            <Link to="/profile">Edit Profile</Link>
-            <Button onClick={logoutHandler}>
-              Log out
-            </Button>
-          </nav>
-          {user?.role === "Instructor" && (
-            <SheetFooter>
-              <SheetClose asChild>
-                <Button
-                  type="submit"
-                  onClick={() => navigate("/admin/dashboard")}
-                >
-                  Dashboard
-                </Button>
-              </SheetClose>
-            </SheetFooter>
-          )}
-        </SheetContent>
-      </Sheet>
+          <Button variant="outline" onClick={() => navigate("/login")}>
+            Login
+          </Button>
+        </>
+      ) : (
+        // If user exists, show Avatar + Menu
+        <>
+          <Avatar>
+            <AvatarImage
+              src={user?.photoUrl || "https://github.com/shadcn.png"}
+              alt="@shadcn"
+            />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                size="icon"
+                className="rounded-full hover:bg-gray-200"
+                variant="outline"
+              >
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="flex flex-col">
+              <SheetHeader className="flex flex-row items-center justify-between mt-2">
+                <SheetTitle>
+                  <Link to="/">SkillSutra</Link>
+                </SheetTitle>
+                <DarkMode />
+              </SheetHeader>
+              <Separator className="mr-2" />
+              <nav className="flex flex-col space-y-4">
+                <Link to="/my-learning">My Learning</Link>
+                <Link to="/profile">Edit Profile</Link>
+                <Button onClick={logoutHandler}>Log out</Button>
+              </nav>
+              {user?.role === "Instructor" && (
+                <SheetFooter>
+                  <SheetClose asChild>
+                    <Button
+                      type="button"
+                      onClick={() => navigate("/admin/dashboard")}
+                    >
+                      Dashboard
+                    </Button>
+                  </SheetClose>
+                </SheetFooter>
+              )}
+            </SheetContent>
+          </Sheet>
+        </>
+      )}
     </div>
   );
 };
