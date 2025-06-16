@@ -1,7 +1,7 @@
 // features/api/certificateApi.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const CERTIFICATE_API = "http://localhost:8080/api/v1/certificates/";
+const CERTIFICATE_API = "https://skillsutra.onrender.com/api/v1/certificates/";
 
 export const certificateApi = createApi({
     reducerPath: "certificateApi",

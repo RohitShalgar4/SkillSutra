@@ -25,7 +25,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/password-reset/request`,
+        `https://skillsutra.onrender.com/api/v1/password-reset/request`,
         { email },
         { 
           withCredentials: true,

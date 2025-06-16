@@ -14,7 +14,7 @@ const CertificateValidator = () => {
     setLoading(true);
     
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/certificates/validate/${certificateId}`);
+      const response = await axios.get(`https://skillsutra.onrender.com/api/v1/certificates/validate/${certificateId}`);
       
       if (response.data.success) {
         setValidationResult({

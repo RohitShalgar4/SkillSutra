@@ -74,7 +74,7 @@ const CourseProgress = () => {
   const handleGetCertificate = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/certificates/${courseId}/generate`,
+        `https://skillsutra.onrender.com/api/v1/certificates/${courseId}/generate`,
         {
           method: "POST",
           credentials: "include",

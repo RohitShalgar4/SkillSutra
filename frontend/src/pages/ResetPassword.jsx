@@ -27,7 +27,7 @@ const ResetPassword = () => {
     const verifyToken = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/password-reset/verify/${token}`,
+          `https://skillsutra.onrender.com/api/v1/password-reset/verify/${token}`,
           { withCredentials: true }
         );
         setIsValidToken(response.data.success);
@@ -52,7 +52,7 @@ const ResetPassword = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/password-reset/reset/${token}`,
+        `https://skillsutra.onrender.com/api/v1/password-reset/reset/${token}`,
         { password },
         { withCredentials: true }
       );

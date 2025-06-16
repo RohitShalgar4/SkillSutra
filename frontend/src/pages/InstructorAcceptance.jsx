@@ -5,7 +5,7 @@ import { Box, Typography, CircularProgress, Button, Paper } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_URL = 'https://skillsutra.onrender.com';
 
 const InstructorAcceptance = () => {
   const location = useLocation();

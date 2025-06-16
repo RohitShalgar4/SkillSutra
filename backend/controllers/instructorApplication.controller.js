@@ -8,7 +8,7 @@ dotenv.config();
 
 // Log all environment variables (excluding sensitive values)
 console.log('Environment check:', {
-  FRONTEND_URL: process.env.FRONTEND_URL,
+  FRONTEND_URL: "https://skillsutra.netlify.app" || "http://localhost:5173",
   DIRECTOR_EMAIL: process.env.DIRECTOR_EMAIL,
   HAS_DIRECTOR_SERVICE_ID: !!process.env.EMAILJS_DIRECTOR_SERVICE_ID,
   HAS_DIRECTOR_PUBLIC_KEY: !!process.env.EMAILJS_DIRECTOR_PUBLIC_KEY,
@@ -77,8 +77,8 @@ export const submitApplication = async (req, res) => {
         whyTeach: application.whyTeach,
         qualifications: application.qualifications,
         availability: application.availability,
-        accept_url: `${process.env.FRONTEND_URL}/instructor-acceptance?action=accept&email=${application.email}&name=${application.name}`,
-        decline_url: `${process.env.FRONTEND_URL}/instructor-acceptance?action=decline&email=${application.email}&name=${application.name}`
+        accept_url: `https://skillsutra.netlify.app/instructor-acceptance?action=accept&email=${application.email}&name=${application.name}`,
+        decline_url: `https://skillsutra.netlify.app/instructor-acceptance?action=decline&email=${application.email}&name=${application.name}`
       }
     };
 
@@ -91,9 +91,9 @@ export const submitApplication = async (req, res) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Origin': process.env.FRONTEND_URL,
+            'Origin': "https://skillsutra.netlify.app",
             'User-Agent': 'Mozilla/5.0',
-            'Referer': process.env.FRONTEND_URL
+            'Referer': "https://skillsutra.netlify.app"
           }
         }
       );
@@ -239,12 +239,12 @@ export const confirmApplication = async (req, res) => {
       template_params: {
         name: application.name,
         email: application.email,
-        frontend_url: process.env.FRONTEND_URL,
+        frontend_url: "https://skillsutra.netlify.app",
         application_id: application._id,
         status: action === 'accept' ? 'approved' : 'rejected',
         expertise_area: application.expertiseArea,
         experience: application.experience,
-        login_url: `${process.env.FRONTEND_URL}/login`,
+        login_url: `https://skillsutra.netlify.app/login`,
         why_teach: application.whyTeach,
         qualifications: application.qualifications,
         availability: application.availability
@@ -264,9 +264,9 @@ export const confirmApplication = async (req, res) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Origin': process.env.FRONTEND_URL,
+            'Origin': "https://skillsutra.netlify.app",
             'User-Agent': 'Mozilla/5.0',
-            'Referer': process.env.FRONTEND_URL
+            'Referer': "https://skillsutra.netlify.app"
           }
         }
       );
@@ -289,9 +289,9 @@ export const confirmApplication = async (req, res) => {
           {
             headers: {
               'Content-Type': 'application/json',
-              'Origin': process.env.FRONTEND_URL,
+              'Origin': "https://skillsutra.netlify.app",
               'User-Agent': 'Mozilla/5.0',
-              'Referer': process.env.FRONTEND_URL
+              'Referer': "https://skillsutra.netlify.app"
             }
           }
         );

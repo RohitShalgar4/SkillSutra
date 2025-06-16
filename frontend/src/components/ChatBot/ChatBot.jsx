@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChatBubbleLeftIcon, XMarkIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = 'https://skillsutra.onrender.com';
 
 const ChatBot = () => {
     const [isOpen, setIsOpen] = useState(false);

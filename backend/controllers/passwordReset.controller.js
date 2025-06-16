@@ -38,9 +38,9 @@ const sendResetEmail = async (email, resetLink) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Origin: process.env.FRONTEND_URL,
+          Origin: "https://skillsutra.netlify.app",
           "User-Agent": "Mozilla/5.0",
-          Referer: process.env.FRONTEND_URL,
+          Referer: "https://skillsutra.netlify.app",
         },
       }
     );
@@ -102,7 +102,7 @@ export const requestPasswordReset = async (req, res) => {
     console.log("Reset request created:", resetRequest._id);
 
     // Generate reset link
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+    const resetLink = `https://skillsutra.netlify.app/reset-password/${token}`;
 
     // Check if EmailJS environment variables are set
     if (!process.env.EMAILJS_RESET_SERVICE_ID || 

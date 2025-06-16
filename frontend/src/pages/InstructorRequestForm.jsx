@@ -84,7 +84,7 @@ const InstructorRequestForm = () => {
 
   const sendEmail = async (data) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/instructor-application/request-to-be-instructor', data, {
+      const response = await axios.post('https://skillsutra.onrender.com/api/v1/instructor-application/request-to-be-instructor', data, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -109,7 +109,7 @@ const InstructorRequestForm = () => {
       });
 
       // Call the backend to handle the acceptance
-      const response = await axios.get(`http://localhost:8080/api/v1/instructor-application/request-to-be-instructor`, {
+      const response = await axios.get(`https://skillsutra.onrender.com/api/v1/instructor-application/request-to-be-instructor`, {
         params: {
           action: 'accept',
           email,
