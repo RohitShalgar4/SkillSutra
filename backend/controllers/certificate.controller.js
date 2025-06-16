@@ -276,7 +276,7 @@ export const generateCertificate = async (req, res) => {
            .text('Director of SkillSutra', signatureX, bottomSectionY + 50, { width: 180, align: 'center' });
 
         // Add stamp image in the center
-        const stampImagePath = path.resolve('assets/stamp.png');
+        const stampImagePath = path.resolve('assets/Stamp.png');
         const stampWidth = 80;
         const stampHeight = 80;
         const stampX = centerX - (stampWidth / 2);
