@@ -184,27 +184,40 @@ const InstructorRequestForm = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-950">
         <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
+  // If user is already an instructor, show a message and hide the form
+  if (data?.user?.role === "Instructor") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-950">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 max-w-xl w-full text-center">
+          <User className="w-12 h-12 mx-auto text-blue-600 dark:text-blue-400 mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">You are already an Instructor</h1>
+          <p className="text-gray-700 dark:text-gray-300">You have already been approved as an instructor. Thank you for your contribution!</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-950 py-8 px-4">
       <div className="max-w-4xl mx-auto">
           {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 dark:bg-blue-700 rounded-full mb-4">
             <User className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             {new URLSearchParams(window.location.search).get('action') === 'accept' 
               ? 'Instructor Approved!' 
               : 'Become an Instructor'
             }
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             {new URLSearchParams(window.location.search).get('action') === 'accept'
               ? 'The instructor application has been processed and a welcome email has been sent.'
               : 'Share your expertise and help others learn. Fill out this form to apply as an instructor on our platform.'
@@ -213,7 +226,7 @@ const InstructorRequestForm = () => {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 border border-gray-200 dark:border-gray-700">
           {/* Status Messages */}
           {submitStatus && (
             <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
@@ -246,7 +259,7 @@ const InstructorRequestForm = () => {
                   onChange={handleInputChange}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                     errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                  }`}
+                  } dark:bg-gray-800 dark:text-white dark:placeholder-gray-400`}
                   placeholder="Your full name"
                   disabled={true} // Auto-filled from user session
                 />
@@ -266,7 +279,7 @@ const InstructorRequestForm = () => {
                   onChange={handleInputChange}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                     errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                  }`}
+                  } dark:bg-gray-800 dark:text-white dark:placeholder-gray-400`}
                   placeholder="your.email@example.com"
                   disabled={true} // Auto-filled from user session
                 />
@@ -287,7 +300,7 @@ const InstructorRequestForm = () => {
                 onChange={handleInputChange}
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                   errors.phone ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                }`}
+                } dark:bg-gray-800 dark:text-white dark:placeholder-gray-400`}
                 placeholder="+1 (555) 123-4567"
               />
               {errors.phone && <p className="text-red-600 text-sm mt-1">{errors.phone}</p>}
@@ -311,7 +324,7 @@ const InstructorRequestForm = () => {
                     onChange={handleInputChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.expertiseArea ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    }`}
+                    } dark:bg-gray-800 dark:text-white dark:placeholder-gray-400`}
                     placeholder="e.g., Web Development, Data Science, Digital Marketing"
                   />
                   {errors.expertiseArea && <p className="text-red-600 text-sm mt-1">{errors.expertiseArea}</p>}
@@ -329,7 +342,7 @@ const InstructorRequestForm = () => {
                     rows={3}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.qualifications ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    }`}
+                    } dark:bg-gray-800 dark:text-white dark:placeholder-gray-400`}
                     placeholder="List your relevant degrees, certifications, and professional credentials"
                   />
                   {errors.qualifications && <p className="text-red-600 text-sm mt-1">{errors.qualifications}</p>}
@@ -348,7 +361,7 @@ const InstructorRequestForm = () => {
                     rows={4}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.experience ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    }`}
+                    } dark:bg-gray-800 dark:text-white dark:placeholder-gray-400`}
                     placeholder="Describe your teaching experience, including years of experience, types of students taught, and any notable achievements"
                   />
                   {errors.experience && <p className="text-red-600 text-sm mt-1">{errors.experience}</p>}
@@ -366,7 +379,7 @@ const InstructorRequestForm = () => {
                     rows={3}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.availability ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    }`}
+                    } dark:bg-gray-800 dark:text-white dark:placeholder-gray-400`}
                     placeholder="When are you available to teach? Include days, times, and time zone"
                   />
                   {errors.availability && <p className="text-red-600 text-sm mt-1">{errors.availability}</p>}
@@ -385,7 +398,7 @@ const InstructorRequestForm = () => {
                     rows={4}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                       errors.whyTeach ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    }`}
+                    } dark:bg-gray-800 dark:text-white dark:placeholder-gray-400`}
                     placeholder="Tell us about your motivation to teach and what you hope to achieve"
                   />
                   {errors.whyTeach && <p className="text-red-600 text-sm mt-1">{errors.whyTeach}</p>}
