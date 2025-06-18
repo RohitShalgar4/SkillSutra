@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, CircularProgress, Button, Paper } from '@mui/material';
@@ -25,7 +25,7 @@ const InstructorAcceptance = () => {
         const name = params.get('name');
         
         if (!email || !action || !name) {
-          setError('Missing required parameters: email, action, and name are required');
+          setError('Missing required parameters: email, action, and name are required.\nIf you landed here from an email link and see this error, please ensure the full link was copied and opened in your browser. If the problem persists, contact support.');
           setLoading(false);
           return;
         }
@@ -109,6 +109,9 @@ const InstructorAcceptance = () => {
           </Typography>
           <Typography color="textSecondary" paragraph>
             {error}
+          </Typography>
+          <Typography color="textSecondary" paragraph>
+            If you see a &quot;Page Not Found&quot; or this error after clicking a button in your email, it may be due to a temporary deployment issue. Please refresh the page or return to the home page and try again. If the issue persists, contact support.
           </Typography>
           <Button
             variant="contained"

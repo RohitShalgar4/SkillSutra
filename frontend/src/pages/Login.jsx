@@ -50,6 +50,12 @@ const Login = () => {
   ] = useLoginUserMutation();
   const navigate = useNavigate();
 
+  // Sync activeTab with URL query param
+  useEffect(() => {
+    const tab = searchParams.get("tab") || "login";
+    setActiveTab(tab);
+  }, [searchParams]);
+
   const changeInputHandler = (e, type) => {
     const { name, value } = e.target;
     if (type === "signup") {

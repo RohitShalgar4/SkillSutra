@@ -4,6 +4,7 @@ import {
   getAllPurchasedCourse,
   getCourseDetailWithPurchaseStatus,
   stripeWebhook,
+  checkAndUpdatePurchaseStatus,
 } from "../controllers/coursePurchase.controller.js";
 import isAuthenticated from "../middleware/isAutheticated.js";
 
@@ -18,7 +19,9 @@ router
 router
   .route("/course/:courseId/detail-with-status")
   .get(isAuthenticated, getCourseDetailWithPurchaseStatus);
-
+router
+  .route("/course/:courseId/check-status")
+  .post(isAuthenticated, checkAndUpdatePurchaseStatus);
 router.route("/").get(isAuthenticated, getAllPurchasedCourse);
 
 export default router;
