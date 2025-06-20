@@ -9,12 +9,16 @@ import {
 } from "@/features/api/courseProgressApi";
 import { CheckCircle, CheckCircle2, CirclePlay } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useLoadUserQuery } from "@/features/api/authApi";
 
 const CourseProgress = () => {
   const params = useParams();
   const courseId = params.courseId;
+  const [searchParams] = useSearchParams();
+  const purchased = searchParams.get("purchased");
+  const { refetch: refetchUser } = useLoadUserQuery();
   const { data, isLoading, isError, refetch } =
     useGetCourseProgressQuery(courseId);
 
@@ -38,6 +42,13 @@ const CourseProgress = () => {
       toast.success(markInCompleteData.message);
     }
   }, [completedSuccess, inCompletedSuccess]);
+
+  useEffect(() => {
+    if (purchased) {
+      refetch();
+      refetchUser();
+    }
+  }, [purchased]);
 
   const [currentLecture, setCurrentLecture] = useState(null);
 

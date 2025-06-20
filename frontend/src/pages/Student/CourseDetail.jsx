@@ -13,14 +13,26 @@ import { useGetCourseDetailWithStatusQuery } from "@/features/api/purchaseApi";
 import { BadgeInfo, PlayCircle } from "lucide-react";
 import React from "react";
 import ReactPlayer from "react-player";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useLoadUserQuery } from "@/features/api/authApi";
 
 const CourseDetail = () => {
   const params = useParams();
   const courseId = params.courseId;
   const navigate = useNavigate();
-  const { data, isLoading, isError } =
+  const [searchParams] = useSearchParams();
+  const purchasedParam = searchParams.get("purchased");
+  const { refetch: refetchUser } = useLoadUserQuery();
+  const { data, isLoading, isError, refetch } =
     useGetCourseDetailWithStatusQuery(courseId);
+
+  React.useEffect(() => {
+    if (purchasedParam) {
+      refetch();
+      refetchUser();
+    }
+  }, [purchasedParam]);
+
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h>Failed to load course details</h>;
 

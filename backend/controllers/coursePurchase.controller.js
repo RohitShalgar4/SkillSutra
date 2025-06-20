@@ -38,7 +38,7 @@ export const createCheckoutSession = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `https://skillsutra.netlify.app/course-progress/${courseId}`, // once payment successful redirect to course progress page
+      success_url: `https://skillsutra.netlify.app/course-progress/${courseId}?purchased=true`, // once payment successful redirect to course progress page
       cancel_url: `https://skillsutra.netlify.app/course-detail/${courseId}`,
       metadata: {
         courseId: courseId,
