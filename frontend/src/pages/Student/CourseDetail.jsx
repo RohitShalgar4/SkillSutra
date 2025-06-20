@@ -100,6 +100,15 @@ const CourseDetail = () => {
                   height={"100%"}
                   url={course.lectures[0].videoUrl}
                   controls={true}
+                  onContextMenu={e => e.preventDefault()}
+                  config={{
+                    file: {
+                      attributes: {
+                        controlsList: 'nodownload',
+                        onContextMenu: e => e.preventDefault(),
+                      }
+                    }
+                  }}
                 />
               </div>
               <h1>Lecture Title</h1>

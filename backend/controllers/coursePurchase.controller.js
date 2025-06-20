@@ -18,7 +18,7 @@ export const createCheckoutSession = async (req, res) => {
       courseId,
       userId,
       amount: course.coursePrice,
-      status: "completed",
+      status: "pending",
     });
 
     // Create a Stripe checkout session
@@ -59,30 +59,7 @@ export const createCheckoutSession = async (req, res) => {
     newPurchase.paymentId = session.id;
     await newPurchase.save();
 
-    // Make all lectures visible
-    // if (newPurchase.courseId && newPurchase.courseId.lectures.length > 0) {
-    //   await Lecture.updateMany(
-    //     { _id: { $in: newPurchase.courseId.lectures } },
-    //     { $set: { isPreviewFree: true } }
-    //   );
-    //   console.log("Lectures updated for course:", newPurchase.courseId._id);
-    // }
-
-    // Update user's enrolledCourses
-    const updatedUser = await User.findByIdAndUpdate(
-      newPurchase.userId,
-      { $addToSet: { enrolledCourses: newPurchase.courseId._id } },
-      { new: true }
-    );
-    // console.log("User enrolled courses updated:", updatedUser._id);
-
-    // Update course's enrolledStudents
-    const updatedCourse = await Course.findByIdAndUpdate(
-      newPurchase.courseId._id,
-      { $addToSet: { enrolledStudents: newPurchase.userId } },
-      { new: true }
-    );
-    // console.log("Course enrolled students updated:", updatedCourse._id);
+    // Note: User and course enrollment will be handled in the webhook after payment confirmation
 
     return res.status(200).json({
       success: true,
@@ -126,13 +103,15 @@ export const stripeWebhook = async (req, res) => {
         return res.status(404).json({ message: "Purchase not found" });
       }
 
+      console.log("Found purchase record:", purchase._id, "Current status:", purchase.status);
+
       // Update purchase amount and status
       if (session.amount_total) {
         purchase.amount = session.amount_total / 100;
       }
       purchase.status = "completed";
       await purchase.save();
-      console.log("Purchase updated:", purchase._id);
+      console.log("Purchase updated to completed:", purchase._id);
 
       // Make all lectures visible
       if (purchase.courseId && purchase.courseId.lectures.length > 0) {
@@ -188,7 +167,11 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
       .populate({ path: "creator" })
       .populate({ path: "lectures" });
 
-    const purchased = await CoursePurchase.findOne({ userId, courseId });
+    const purchased = await CoursePurchase.findOne({ 
+      userId, 
+      courseId, 
+      status: "completed" 
+    });
     // console.log(purchased);
 
     if (!course) {
@@ -201,6 +184,7 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -222,5 +206,63 @@ export const getAllPurchasedCourse = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Failed to get purchased courses" });
+  }
+};
+
+export const checkAndUpdatePurchaseStatus = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.id;
+
+    // Find any pending purchase for this user and course
+    const pendingPurchase = await CoursePurchase.findOne({
+      userId,
+      courseId,
+      status: "pending"
+    });
+
+    if (pendingPurchase) {
+      // Check if the payment was actually completed in Stripe
+      try {
+        const session = await stripe.checkout.sessions.retrieve(pendingPurchase.paymentId);
+        
+        if (session.payment_status === 'paid') {
+          // Update the purchase status
+          pendingPurchase.status = "completed";
+          await pendingPurchase.save();
+
+          // Update user's enrolledCourses
+          await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { enrolledCourses: courseId } },
+            { new: true }
+          );
+
+          // Update course's enrolledStudents
+          await Course.findByIdAndUpdate(
+            courseId,
+            { $addToSet: { enrolledStudents: userId } },
+            { new: true }
+          );
+
+          return res.status(200).json({
+            success: true,
+            message: "Purchase status updated successfully",
+            purchase: pendingPurchase
+          });
+        }
+      } catch (stripeError) {
+        console.error("Stripe error:", stripeError);
+      }
+    }
+
+    return res.status(200).json({
+      success: false,
+      message: "No pending purchase found or payment not completed"
+    });
+
+  } catch (error) {
+    console.error("Error checking purchase status:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

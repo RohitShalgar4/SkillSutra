@@ -148,6 +148,8 @@ const CourseProgress = () => {
             onPlay={() =>
               handleLectureProgress(currentLecture?._id || initialLecture._id)
             }
+            onContextMenu={e => e.preventDefault()}
+            controlsList="nodownload"
           />
           <div className="mt-2">
             <h3 className="font-medium text-lg">
