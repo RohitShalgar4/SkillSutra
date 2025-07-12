@@ -18,7 +18,7 @@ export const createCheckoutSession = async (req, res) => {
       courseId,
       userId,
       amount: course.coursePrice,
-      status: "pending",
+      status: "completed",
     });
 
     // Create a Stripe checkout session
