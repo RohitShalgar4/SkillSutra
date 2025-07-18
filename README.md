@@ -8,6 +8,8 @@ SkillSutra is a comprehensive Learning Management System (LMS) built with modern
 [![MongoDB](https://img.shields.io/badge/MongoDB-5.0+-green?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 [![Express](https://img.shields.io/badge/Express-5.0+-black?style=for-the-badge&logo=express)](https://expressjs.com/)
 
+### 🔗 Live at [https://skillsutra.netlify.app/](https://skillsutra.netlify.app/)
+
 ## 🌟 Features
 
 - **User Authentication & Authorization**
