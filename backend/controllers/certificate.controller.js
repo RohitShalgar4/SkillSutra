@@ -82,332 +82,343 @@ export const generateCertificate = async (req, res) => {
         const pageHeight = doc.page.height;
         const centerX = pageWidth / 2;
 
-        // Professional color palette (inspired by Coursera/Udemy)
-        const primaryBlue = '#0056D2';
-        const accentGold = '#B8860B';
-        const softGray = '#F5F7FA';
-        const textDark = '#1A1A1A';
-        const textMedium = '#4A4A4A';
-        const textLight = '#7A7A7A';
-        const borderColor = '#E0E0E0';
+        // Professional color scheme inspired by industry standards
+        const primaryGold = '#B8860B';
+        const secondaryGold = '#D4AF37';
+        const accentGold = '#FFD700';
+        const darkBlue = '#2C3E50';
+        const mediumBlue = '#34495E';
+        const lightBlue = '#ECF0F1';
+        const textDark = '#2C3E50';
+        const textMedium = '#5D6D7E';
+        const borderColor = '#E5E7EB';
 
-        // Create elegant background
-        doc.rect(0, 0, pageWidth, pageHeight)
-           .fill('#FFFFFF');
-
-        // Add subtle geometric pattern in background
-        doc.opacity(0.03);
-        for (let i = 0; i < pageWidth; i += 60) {
-            for (let j = 0; j < pageHeight; j += 60) {
-                doc.circle(i, j, 2).fill(primaryBlue);
-            }
-        }
-        doc.opacity(1);
-
-        // Add soft gradient effect at top
-        doc.rect(0, 0, pageWidth, 180)
-           .fill(softGray)
-           .opacity(0.5);
-        doc.opacity(1);
-
-        // Professional border frame
-        const outerMargin = 35;
-        const innerMargin = 42;
-
-        // Outer elegant border
-        doc.rect(outerMargin, outerMargin, 
-                pageWidth - (outerMargin * 2), 
-                pageHeight - (outerMargin * 2))
-           .lineWidth(1)
-           .stroke(borderColor);
-
-        // Inner accent border
-        doc.rect(innerMargin, innerMargin, 
-                pageWidth - (innerMargin * 2), 
-                pageHeight - (innerMargin * 2))
-           .lineWidth(3)
-           .stroke(primaryBlue);
-
-        // Add corner accent decorations
-        const cornerMargin = innerMargin + 10;
-        const cornerLength = 40;
+        // Premium background with subtle gradient
+        const gradient = doc.linearGradient(0, 0, pageWidth, pageHeight);
+        gradient.stop(0, '#FEFEFE');
+        gradient.stop(1, '#FAFAFA');
         
-        // Top-left corner
-        doc.moveTo(cornerMargin, cornerMargin + cornerLength)
-           .lineTo(cornerMargin, cornerMargin)
-           .lineTo(cornerMargin + cornerLength, cornerMargin)
-           .lineWidth(2)
-           .stroke(accentGold);
+        doc.rect(0, 0, pageWidth, pageHeight).fill(gradient);
 
-        // Top-right corner
-        doc.moveTo(pageWidth - cornerMargin, cornerMargin + cornerLength)
-           .lineTo(pageWidth - cornerMargin, cornerMargin)
-           .lineTo(pageWidth - cornerMargin - cornerLength, cornerMargin)
-           .lineWidth(2)
-           .stroke(accentGold);
-
-        // Bottom-left corner
-        doc.moveTo(cornerMargin, pageHeight - cornerMargin - cornerLength)
-           .lineTo(cornerMargin, pageHeight - cornerMargin)
-           .lineTo(cornerMargin + cornerLength, pageHeight - cornerMargin)
-           .lineWidth(2)
-           .stroke(accentGold);
-
-        // Bottom-right corner
-        doc.moveTo(pageWidth - cornerMargin, pageHeight - cornerMargin - cornerLength)
-           .lineTo(pageWidth - cornerMargin, pageHeight - cornerMargin)
-           .lineTo(pageWidth - cornerMargin - cornerLength, pageHeight - cornerMargin)
-           .lineWidth(2)
-           .stroke(accentGold);
-
-        // Header section with logo placeholder
-        const headerY = 70;
-        
-        // Institution badge/seal (circular design)
-        const badgeRadius = 35;
-        const badgeY = headerY + 10;
-        
-        doc.circle(centerX, badgeY, badgeRadius)
-           .lineWidth(3)
-           .stroke(primaryBlue);
-        
-        doc.circle(centerX, badgeY, badgeRadius - 5)
-           .lineWidth(1)
-           .stroke(accentGold);
-
-        // Add star/achievement icon in badge center
-        const starPoints = 5;
-        const starRadius = 18;
-        const starInnerRadius = 8;
-        
+        // Add subtle watermark pattern in the background
         doc.save();
-        doc.translate(centerX, badgeY);
-        
-        for (let i = 0; i < starPoints * 2; i++) {
-            const radius = i % 2 === 0 ? starRadius : starInnerRadius;
-            const angle = (Math.PI * i) / starPoints - Math.PI / 2;
-            const x = Math.cos(angle) * radius;
-            const y = Math.sin(angle) * radius;
-            
-            if (i === 0) {
-                doc.moveTo(x, y);
-            } else {
-                doc.lineTo(x, y);
+        doc.opacity(0.03);
+        for (let i = -100; i < pageWidth + 200; i += 150) {
+            for (let j = -100; j < pageHeight + 200; j += 150) {
+                doc.circle(i, j, 40).fill(primaryGold);
             }
         }
-        doc.closePath().fill(accentGold);
         doc.restore();
 
-        // Institution name below badge
-        doc.font('Helvetica-Bold')
-           .fontSize(13)
-           .fillColor(primaryBlue)
-           .text('SKILLSUTRA ACADEMY', centerX - 120, badgeY + badgeRadius + 12, { 
-               width: 240, 
-               align: 'center' 
-           });
+        // Main border design with multiple layers
+        const borderWidth = 50;
+        const innerBorderWidth = 3;
+        const outerBorderWidth = 8;
 
-        // Main certificate title
-        const titleY = badgeY + badgeRadius + 50;
-        
-        doc.font('Helvetica-Bold')
-           .fontSize(48)
-           .fillColor(textDark)
-           .text('Certificate of Completion', centerX - 280, titleY, { 
-               width: 560, 
-               align: 'center',
-               lineGap: 2
-           });
+        // Outer decorative border
+        doc.rect(borderWidth, borderWidth, 
+                pageWidth - (borderWidth * 2), 
+                pageHeight - (borderWidth * 2))
+           .lineWidth(outerBorderWidth)
+           .stroke(primaryGold);
 
-        // Elegant divider line
-        const dividerY = titleY + 60;
-        const dividerWidth = 180;
-        
-        doc.moveTo(centerX - dividerWidth, dividerY)
-           .lineTo(centerX - 20, dividerY)
+        // Middle border
+        doc.rect(borderWidth + 15, borderWidth + 15, 
+                pageWidth - ((borderWidth + 15) * 2), 
+                pageHeight - ((borderWidth + 15) * 2))
            .lineWidth(2)
-           .stroke(primaryBlue);
-        
-        doc.circle(centerX, dividerY, 4)
-           .fill(accentGold);
-        
-        doc.moveTo(centerX + 20, dividerY)
-           .lineTo(centerX + dividerWidth, dividerY)
-           .lineWidth(2)
-           .stroke(primaryBlue);
-
-        // Content section
-        const contentY = dividerY + 35;
-
-        // "This certifies that" text
-        doc.font('Helvetica')
-           .fontSize(15)
-           .fillColor(textMedium)
-           .text('This is to certify that', centerX - 150, contentY, { 
-               width: 300, 
-               align: 'center' 
-           });
-
-        // User name - prominent display
-        const userName = user.name || (user.firstName + ' ' + (user.lastName || '')) || 'Student Name';
-        doc.font('Helvetica-Bold')
-           .fontSize(36)
-           .fillColor(primaryBlue)
-           .text(userName, centerX - 280, contentY + 28, { 
-               width: 560, 
-               align: 'center',
-               lineGap: 2
-           });
-
-        // Elegant underline under name
-        const nameUnderlineY = contentY + 72;
-        doc.moveTo(centerX - 200, nameUnderlineY)
-           .lineTo(centerX + 200, nameUnderlineY)
-           .lineWidth(0.5)
            .stroke(borderColor);
 
-        // Achievement text
-        doc.font('Helvetica')
-           .fontSize(15)
-           .fillColor(textMedium)
-           .text('has successfully completed', centerX - 150, nameUnderlineY + 18, { 
-               width: 300, 
-               align: 'center' 
-           });
+        // Inner border
+        doc.rect(borderWidth + 25, borderWidth + 25, 
+                pageWidth - ((borderWidth + 25) * 2), 
+                pageHeight - ((borderWidth + 25) * 2))
+           .lineWidth(innerBorderWidth)
+           .stroke(secondaryGold);
 
-        // Course title - professional display
-        const courseTitle = course.courseTitle || 'Web Development Course';
+        // Decorative corner elements - more sophisticated design
+        const cornerSize = 80;
+        const cornerRadius = 15;
+        const corners = [
+            { x: borderWidth + 25, y: borderWidth + 25 },
+            { x: pageWidth - borderWidth - 25, y: borderWidth + 25 },
+            { x: borderWidth + 25, y: pageHeight - borderWidth - 25 },
+            { x: pageWidth - borderWidth - 25, y: pageHeight - borderWidth - 25 }
+        ];
+
+        corners.forEach((corner, index) => {
+            doc.save()
+               .translate(corner.x, corner.y);
+            
+            // Rotate corners 2 and 3 to face inward
+            if (index === 1) doc.rotate(90);
+            if (index === 2) doc.rotate(-90);
+            if (index === 3) doc.rotate(180);
+            
+            // Elegant corner design
+            doc.path('M0,0 L20,0 L20,20 L0,20 Z')
+               .fill(lightBlue);
+            
+            doc.circle(10, 10, 8)
+               .fill(primaryGold);
+            
+            doc.circle(10, 10, 4)
+               .fill(accentGold);
+            
+            doc.restore();
+        });
+
+        // Header section with improved typography
+        const headerY = borderWidth + 70;
+        
+        // Institution name with better styling
         doc.font('Helvetica-Bold')
-           .fontSize(26)
-           .fillColor(textDark)
-           .text(courseTitle, centerX - 300, nameUnderlineY + 45, { 
-               width: 600, 
+           .fontSize(16)
+           .fillColor(mediumBlue)
+           .text('SKILLSUTRA ACADEMY', centerX, headerY, { 
+               width: 300, 
                align: 'center',
-               lineGap: 3
-           });
+               characterSpacing: 1.5
+            });
 
-        // Course completion date
+        // Certificate title with enhanced typography
+        const titleY = headerY + 40;
+        doc.font('Helvetica-Bold')
+           .fontSize(48)
+           .fillColor(primaryGold)
+           .text('CERTIFICATE', centerX, titleY, { 
+               width: 400, 
+               align: 'center',
+               characterSpacing: 2
+            });
+
+        doc.font('Helvetica-Bold')
+           .fontSize(28)
+           .fillColor(darkBlue)
+           .text('OF COMPLETION', centerX, titleY + 60, { 
+               width: 300, 
+               align: 'center',
+               characterSpacing: 1
+            });
+
+        // Decorative elements under title
+        const lineY = titleY + 110;
+        
+        // Triple line decoration
+        doc.moveTo(centerX - 150, lineY)
+           .lineTo(centerX + 150, lineY)
+           .lineWidth(1)
+           .stroke(mediumBlue);
+
+        doc.moveTo(centerX - 120, lineY + 4)
+           .lineTo(centerX + 120, lineY + 4)
+           .lineWidth(2)
+           .stroke(primaryGold);
+
+        doc.moveTo(centerX - 90, lineY + 8)
+           .lineTo(centerX + 90, lineY + 8)
+           .lineWidth(1)
+           .stroke(mediumBlue);
+
+        // Main content section with better spacing
+        const contentStartY = lineY + 50;
+
+        // "This is to certify that" text
+        doc.font('Helvetica')
+           .fontSize(18)
+           .fillColor(textMedium)
+           .text('This is to certify that', centerX, contentStartY, { 
+               width: 400, 
+               align: 'center',
+               lineGap: 5
+            });
+
+        // User name - more prominent and elegant
+        const userName = user.name || (user.firstName + ' ' + (user.lastName || '')) || 'Student Name';
+        const userNameY = contentStartY + 40;
+        
+        doc.font('Helvetica-Bold')
+           .fontSize(36)
+           .fillColor(textDark)
+           .text(userName.toUpperCase(), centerX, userNameY, { 
+               width: 500, 
+               align: 'center',
+               characterSpacing: 1.2
+            });
+
+        // Decorative underline for name
+        const nameUnderlineY = userNameY + 50;
+        doc.moveTo(centerX - 180, nameUnderlineY)
+           .lineTo(centerX + 180, nameUnderlineY)
+           .lineWidth(2)
+           .stroke(secondaryGold);
+
+        // Add decorative elements on the name underline
+        for (let i = -180; i <= 180; i += 30) {
+            if (i % 60 === 0) {
+                doc.circle(centerX + i, nameUnderlineY, 2)
+                   .fill(primaryGold);
+            }
+        }
+
+        // Completion text
+        doc.font('Helvetica')
+           .fontSize(16)
+           .fillColor(textMedium)
+           .text('has successfully completed the course', centerX, nameUnderlineY + 25, { 
+               width: 400, 
+               align: 'center'
+            });
+
+        // Course title section
+        const courseTitle = course.courseTitle || 'Web Development Course';
+        const courseTitleY = nameUnderlineY + 60;
+        
+        doc.font('Helvetica-Bold')
+           .fontSize(24)
+           .fillColor(darkBlue)
+           .text(`"${courseTitle}"`, centerX, courseTitleY, { 
+               width: 500, 
+               align: 'center',
+               lineGap: 5
+            });
+
+        // Achievement text
+        doc.font('Helvetica-Oblique')
+           .fontSize(14)
+           .fillColor(textMedium)
+           .text('demonstrating proficiency and commitment to learning', centerX, courseTitleY + 45, { 
+               width: 450, 
+               align: 'center'
+            });
+
+        // Date and details section
+        const detailsY = pageHeight - 150;
+        
+        // Left side - Certificate details
+        const leftDetailsX = borderWidth + 60;
+        
+        doc.font('Helvetica-Bold')
+           .fontSize(12)
+           .fillColor(mediumBlue)
+           .text('CERTIFICATE ID', leftDetailsX, detailsY);
+        
+        doc.font('Helvetica')
+           .fontSize(11)
+           .fillColor(textMedium)
+           .text(certificate.certificateNumber, leftDetailsX, detailsY + 18);
+
+        doc.font('Helvetica-Bold')
+           .fontSize(12)
+           .fillColor(mediumBlue)
+           .text('DATE OF COMPLETION', leftDetailsX, detailsY + 45);
+        
         const completionDate = new Date().toLocaleDateString('en-US', { 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
         });
-
-        doc.font('Helvetica')
-           .fontSize(13)
-           .fillColor(textLight)
-           .text(`Completed on ${completionDate}`, centerX - 150, nameUnderlineY + 85, { 
-               width: 300, 
-               align: 'center' 
-           });
-
-        // Bottom section with credentials
-        const bottomY = pageHeight - 100;
-        
-        // Left section - Certificate ID
-        const leftX = 80;
         
         doc.font('Helvetica')
-           .fontSize(9)
-           .fillColor(textLight)
-           .text('CERTIFICATE ID', leftX, bottomY - 5);
-        
-        doc.font('Helvetica-Bold')
            .fontSize(11)
-           .fillColor(textDark)
-           .text(certificate.certificateNumber, leftX, bottomY + 8);
+           .fillColor(textMedium)
+           .text(completionDate, leftDetailsX, detailsY + 63);
 
-        // Verification QR code placeholder (square)
-        const qrSize = 45;
-        doc.rect(leftX, bottomY + 25, qrSize, qrSize)
-           .lineWidth(1)
-           .stroke(borderColor);
+        // Right side - Signature area
+        const signatureX = pageWidth - borderWidth - 200;
         
-        doc.font('Helvetica')
-           .fontSize(8)
-           .fillColor(textLight)
-           .text('Scan to verify', leftX - 5, bottomY + qrSize + 28, {
-               width: qrSize + 10,
-               align: 'center'
-           });
-
-        // Right section - Signature
-        const rightX = pageWidth - 220;
-        
-        // Try to add signature image if it exists
+        // Signature image with fallback
         try {
             const signatureImagePath = path.resolve('assets/signature.png');
-            doc.image(signatureImagePath, rightX + 20, bottomY - 40, {
-                width: 120,
-                height: 50,
-                align: 'center'
+            const signatureWidth = 120;
+            const signatureHeight = 50;
+            const signatureImageX = signatureX + (180 - signatureWidth) / 2;
+            const signatureImageY = detailsY - 10;
+            
+            doc.image(signatureImagePath, signatureImageX, signatureImageY, {
+                width: signatureWidth,
+                height: signatureHeight
             });
-        } catch (err) {
-            // If signature image doesn't exist, create a placeholder
-            doc.font('Helvetica-Oblique')
-               .fontSize(20)
-               .fillColor(textMedium)
-               .text('Signature', rightX + 40, bottomY - 30);
+        } catch (error) {
+            console.log('Signature image not found, using text signature');
+            // Fallback signature line
+            doc.moveTo(signatureX + 30, detailsY + 5)
+               .lineTo(signatureX + 150, detailsY + 5)
+               .lineWidth(1)
+               .stroke(textDark);
         }
 
-        // Signature line
-        doc.moveTo(rightX, bottomY + 20)
-           .lineTo(rightX + 160, bottomY + 20)
-           .lineWidth(0.5)
-           .stroke(borderColor);
-
-        // Signature details
+        // Signature text
         doc.font('Helvetica-Bold')
-           .fontSize(11)
-           .fillColor(textDark)
-           .text('Director', rightX, bottomY + 26, { 
-               width: 160, 
-               align: 'center' 
-           });
+           .fontSize(12)
+           .fillColor(darkBlue)
+           .text('Sarah Johnson', signatureX, detailsY + 20, { width: 180, align: 'center' });
 
         doc.font('Helvetica')
-           .fontSize(9)
-           .fillColor(textLight)
-           .text('SkillSutra Academy', rightX, bottomY + 40, { 
-               width: 160, 
-               align: 'center' 
-           });
+           .fontSize(11)
+           .fillColor(textMedium)
+           .text('Director of Education', signatureX, detailsY + 38, { width: 180, align: 'center' });
 
-        // Add stamp if available
+        doc.font('Helvetica')
+           .fontSize(10)
+           .fillColor(textMedium)
+           .text('SkillSutra Academy', signatureX, detailsY + 55, { width: 180, align: 'center' });
+
+        // Central seal/logo
         try {
-            const stampImagePath = path.resolve('assets/Stamp.png');
-            const stampSize = 75;
-            doc.image(stampImagePath, centerX - stampSize/2, bottomY - 10, {
-                width: stampSize,
-                height: stampSize,
-                opacity: 0.6
+            const sealImagePath = path.resolve('assets/seal.png');
+            const sealSize = 100;
+            const sealX = centerX - (sealSize / 2);
+            const sealY = detailsY - 120;
+            
+            doc.image(sealImagePath, sealX, sealY, {
+                width: sealSize,
+                height: sealSize
             });
-        } catch (err) {
-            // If stamp doesn't exist, create a circular placeholder
-            doc.circle(centerX, bottomY + 25, 30)
+        } catch (error) {
+            console.log('Seal image not found, creating decorative seal');
+            // Create a decorative seal as fallback
+            const sealSize = 80;
+            const sealX = centerX - (sealSize / 2);
+            const sealY = detailsY - 110;
+            
+            doc.circle(centerX, sealY + sealSize/2, sealSize/2)
                .lineWidth(2)
-               .stroke(accentGold)
-               .opacity(0.5);
+               .stroke(primaryGold);
+            
+            doc.circle(centerX, sealY + sealSize/2, sealSize/2 - 10)
+               .lineWidth(1)
+               .stroke(secondaryGold);
             
             doc.font('Helvetica-Bold')
-               .fontSize(8)
-               .fillColor(accentGold)
-               .text('OFFICIAL', centerX - 20, bottomY + 20, {
-                   width: 40,
-                   align: 'center'
-               })
-               .opacity(1);
+               .fontSize(10)
+               .fillColor(primaryGold)
+               .text('OFFICIAL', centerX, sealY + sealSize/2 - 15, { width: 60, align: 'center' });
+            
+            doc.font('Helvetica-Bold')
+               .fontSize(10)
+               .fillColor(primaryGold)
+               .text('SEAL', centerX, sealY + sealSize/2, { width: 60, align: 'center' });
         }
 
-        // Footer verification notice
+        // Footer with verification information
+        const footerY = pageHeight - 40;
+        
         doc.font('Helvetica')
-           .fontSize(8)
-           .fillColor(textLight)
-           .text('This certificate can be verified at www.skillsutra.com/verify', 
-                 centerX - 150, pageHeight - 25, { 
-                     width: 300, 
-                     align: 'center' 
-                 });
+           .fontSize(10)
+           .fillColor(textMedium)
+           .text('This certificate verifies that the above individual has completed the mentioned course.', centerX, footerY, { 
+               width: 500, 
+               align: 'center'
+            });
+
+        doc.font('Helvetica-Oblique')
+           .fontSize(9)
+           .fillColor(mediumBlue)
+           .text(`Verify at: skillsutra.com/verify/${certificate.certificateNumber}`, centerX, footerY + 15, { 
+               width: 400, 
+               align: 'center'
+            });
 
         // Finalize the PDF
         doc.end();
