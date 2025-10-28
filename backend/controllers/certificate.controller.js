@@ -245,7 +245,7 @@ export const generateCertificate = async (req, res) => {
         doc.font('Helvetica-Bold')
             .fontSize(11)
             .fillColor(textDark)
-            .text(formattedDate, borderWidth + 60, bottomSectionY + 15);
+            .text(formattedDate, borderWidth + 60, bottomSectionY + 50);
 
 
         // Signature section - right side
