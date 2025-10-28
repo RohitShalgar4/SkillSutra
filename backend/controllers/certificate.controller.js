@@ -238,11 +238,7 @@ export const generateCertificate = async (req, res) => {
         doc.font('Helvetica-Bold')
            .fontSize(11)
            .fillColor(textDark)
-           .text(new Date().toLocaleDateString('en-US', { 
-               year: 'numeric', 
-               month: 'long', 
-               day: 'numeric' 
-           }), borderWidth + 60, bottomSectionY + 50);
+           .text(`${certificate.completionDate}`, borderWidth + 60, bottomSectionY + 15);
 
         // Signature section - right side
         const signatureX = pageWidth - borderWidth - 200;
