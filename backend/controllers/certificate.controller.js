@@ -23,10 +23,10 @@ export const generateCertificate = async (req, res) => {
         }
 
         // Check if course is completed
-        const progress = await CourseProgress.findOne({ 
-            userId, 
+        const progress = await CourseProgress.findOne({
+            userId,
             courseId,
-            completed: true 
+            completed: true
         }).populate('courseId', 'courseTitle instructor duration');
 
         console.log('Course progress:', progress);
@@ -48,7 +48,7 @@ export const generateCertificate = async (req, res) => {
 
         // Check if certificate already exists
         let certificate = await Certificate.findOne({ userId, courseId });
-        
+
         console.log('Existing certificate:', certificate);
 
         if (!certificate) {
@@ -58,7 +58,7 @@ export const generateCertificate = async (req, res) => {
 
         // Create an array to store PDF chunks
         const chunks = [];
-        
+
         // Generate PDF certificate
         const doc = new PDFDocument({
             layout: 'landscape',
@@ -68,7 +68,7 @@ export const generateCertificate = async (req, res) => {
 
         // Collect PDF data chunks
         doc.on('data', chunk => chunks.push(chunk));
-        
+
         // When PDF is done, send it to client
         doc.on('end', () => {
             const result = Buffer.concat(chunks);
@@ -91,13 +91,13 @@ export const generateCertificate = async (req, res) => {
 
         // Background with gradient effect
         doc.rect(0, 0, pageWidth, pageHeight)
-           .fill('#FEFEFE');
+            .fill('#FEFEFE');
 
         // Add subtle background pattern
         for (let i = 0; i < pageWidth; i += 100) {
             for (let j = 0; j < pageHeight; j += 100) {
                 doc.circle(i, j, 1)
-                   .fill('#F8F8F8');
+                    .fill('#F8F8F8');
             }
         }
 
@@ -106,19 +106,19 @@ export const generateCertificate = async (req, res) => {
         const innerBorderWidth = 8;
 
         // Outer border
-        doc.rect(borderWidth, borderWidth, 
-                pageWidth - (borderWidth * 2), 
-                pageHeight - (borderWidth * 2))
-           .lineWidth(4)
-           .stroke(primaryGold);
+        doc.rect(borderWidth, borderWidth,
+            pageWidth - (borderWidth * 2),
+            pageHeight - (borderWidth * 2))
+            .lineWidth(4)
+            .stroke(primaryGold);
 
         // Inner border
-        doc.rect(borderWidth + innerBorderWidth, 
-                borderWidth + innerBorderWidth, 
-                pageWidth - ((borderWidth + innerBorderWidth) * 2), 
-                pageHeight - ((borderWidth + innerBorderWidth) * 2))
-           .lineWidth(2)
-           .stroke(darkGold);
+        doc.rect(borderWidth + innerBorderWidth,
+            borderWidth + innerBorderWidth,
+            pageWidth - ((borderWidth + innerBorderWidth) * 2),
+            pageHeight - ((borderWidth + innerBorderWidth) * 2))
+            .lineWidth(2)
+            .stroke(darkGold);
 
         // Decorative corner elements
         const cornerSize = 50;
@@ -132,42 +132,42 @@ export const generateCertificate = async (req, res) => {
         corners.forEach(corner => {
             // Corner decoration
             doc.save()
-               .translate(corner.x, corner.y);
-            
+                .translate(corner.x, corner.y);
+
             // Decorative corner flourish
             doc.path('M0,0 L20,0 L20,20 L0,20 Z')
-               .fill(lightGold);
-            
+                .fill(lightGold);
+
             doc.path('M0,0 Q10,-10 20,0 Q10,10 0,20 Q-10,10 0,0')
-               .fill(primaryGold);
-            
+                .fill(primaryGold);
+
             doc.restore();
         });
 
         // Header section
         const headerY = borderWidth + 50;
-        
+
         // Institution/Organization name
         doc.font('Helvetica-Bold')
-           .fontSize(14)
-           .fillColor(darkGold)
-           .text('SKILLSUTRA ACADEMY', centerX - 100, headerY, { width: 200, align: 'center' });
+            .fontSize(14)
+            .fillColor(darkGold)
+            .text('SKILLSUTRA ACADEMY', centerX - 100, headerY, { width: 200, align: 'center' });
 
         // Certificate title
         doc.font('Helvetica-Bold')
-           .fontSize(42)
-           .fillColor(primaryGold)
-           .text('CERTIFICATE', centerX - 150, headerY + 35, { width: 300, align: 'center' });
+            .fontSize(42)
+            .fillColor(primaryGold)
+            .text('CERTIFICATE', centerX - 150, headerY + 35, { width: 300, align: 'center' });
 
         doc.fontSize(28)
-           .text('OF COMPLETION', centerX - 120, headerY + 85, { width: 240, align: 'center' });
+            .text('OF COMPLETION', centerX - 120, headerY + 85, { width: 240, align: 'center' });
 
         // Decorative line under title
         const lineY = headerY + 130;
         doc.moveTo(centerX - 120, lineY)
-           .lineTo(centerX + 120, lineY)
-           .lineWidth(2)
-           .stroke(primaryGold);
+            .lineTo(centerX + 120, lineY)
+            .lineWidth(2)
+            .stroke(primaryGold);
 
         // Add decorative elements on the line
         doc.circle(centerX - 120, lineY, 3).fill(darkGold);
@@ -179,76 +179,84 @@ export const generateCertificate = async (req, res) => {
 
         // "This is to certify that" text
         doc.font('Helvetica')
-           .fontSize(16)
-           .fillColor(textLight)
-           .text('This is to certify that', centerX - 100, contentY, { width: 200, align: 'center' });
+            .fontSize(16)
+            .fillColor(textLight)
+            .text('This is to certify that', centerX - 100, contentY, { width: 200, align: 'center' });
 
         // User name - make it prominent
         const userName = user.name || (user.firstName + ' ' + (user.lastName || '')) || 'Student Name';
         doc.font('Helvetica-Bold')
-           .fontSize(32)
-           .fillColor(textDark)
-           .text(userName.toUpperCase(), centerX - 200, contentY + 30, { width: 400, align: 'center' });
+            .fontSize(32)
+            .fillColor(textDark)
+            .text(userName.toUpperCase(), centerX - 200, contentY + 30, { width: 400, align: 'center' });
 
         // Add underline under name
         const nameUnderlineY = contentY + 70;
         doc.moveTo(centerX - 150, nameUnderlineY)
-           .lineTo(centerX + 150, nameUnderlineY)
-           .lineWidth(1)
-           .stroke(primaryGold);
+            .lineTo(centerX + 150, nameUnderlineY)
+            .lineWidth(1)
+            .stroke(primaryGold);
 
         // "has successfully completed" text
         doc.font('Helvetica')
-           .fontSize(16)
-           .fillColor(textLight)
-           .text('has successfully completed the course', centerX - 150, nameUnderlineY + 20, { width: 300, align: 'center' });
+            .fontSize(16)
+            .fillColor(textLight)
+            .text('has successfully completed the course', centerX - 150, nameUnderlineY + 20, { width: 300, align: 'center' });
 
         // Course title
         const courseTitle = course.courseTitle || 'Web Development Course';
         doc.font('Helvetica-Bold')
-           .fontSize(24)
-           .fillColor(darkGold)
-           .text(courseTitle, centerX - 200, nameUnderlineY + 50, { width: 400, align: 'center' });
+            .fontSize(24)
+            .fillColor(darkGold)
+            .text(courseTitle, centerX - 200, nameUnderlineY + 50, { width: 400, align: 'center' });
 
         // Decorative line after course title
         doc.moveTo(centerX - 100, nameUnderlineY + 85)
-           .lineTo(centerX + 100, nameUnderlineY + 85)
-           .lineWidth(1)
-           .stroke(primaryGold);
+            .lineTo(centerX + 100, nameUnderlineY + 85)
+            .lineWidth(1)
+            .stroke(primaryGold);
 
         // Bottom section with details
         const bottomSectionY = pageHeight - 120;
-        
+
         // Certificate details - left side
         doc.font('Helvetica')
-           .fontSize(11)
-           .fillColor(textLight)
-           .text('Certificate Number:', borderWidth + 60, bottomSectionY);
-        
+            .fontSize(11)
+            .fillColor(textLight)
+            .text('Certificate Number:', borderWidth + 60, bottomSectionY);
+
         doc.font('Helvetica-Bold')
-           .fontSize(11)
-           .fillColor(textDark)
-           .text(`${certificate.certificateNumber}`, borderWidth + 60, bottomSectionY + 15);
+            .fontSize(11)
+            .fillColor(textDark)
+            .text(`${certificate.certificateNumber}`, borderWidth + 60, bottomSectionY + 15);
 
         doc.font('Helvetica')
-           .fontSize(11)
-           .fillColor(textLight)
-           .text('Date of Completion:', borderWidth + 60, bottomSectionY + 35);
-        
+            .fontSize(11)
+            .fillColor(textLight)
+            .text('Date of Completion:', borderWidth + 60, bottomSectionY + 35);
+
+        // Format the date properly before rendering
+        const formattedDate = new Date(certificate.completionDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
         doc.font('Helvetica-Bold')
-           .fontSize(11)
-           .fillColor(textDark)
-           .text(`${certificate.completionDate}`, borderWidth + 60, bottomSectionY + 15);
+            .fontSize(11)
+            .fillColor(textDark)
+            .text(formattedDate, borderWidth + 60, bottomSectionY + 15);
+
 
         // Signature section - right side
         const signatureX = pageWidth - borderWidth - 200;
-        
+
         const signatureImagePath = path.resolve('assets/signature.png');
         const imageWidth = 140;
         const imageHeight = 60;
         const imageX = signatureX + (180 - imageWidth) / 2;
         const imageY = bottomSectionY - 45;
-        
+
         doc.image(signatureImagePath, imageX, imageY, {
             width: imageWidth,
             height: imageHeight
@@ -256,20 +264,20 @@ export const generateCertificate = async (req, res) => {
 
         // Signature line
         doc.moveTo(signatureX, bottomSectionY + 30)
-           .lineTo(signatureX + 180, bottomSectionY + 30)
-           .lineWidth(1)
-           .stroke(textLight);
+            .lineTo(signatureX + 180, bottomSectionY + 30)
+            .lineWidth(1)
+            .stroke(textLight);
 
         // Signature text
         doc.font('Helvetica')
-           .fontSize(10)
-           .fillColor(textLight)
-           .text('Authorized Signature', signatureX, bottomSectionY + 35, { width: 180, align: 'center' });
+            .fontSize(10)
+            .fillColor(textLight)
+            .text('Authorized Signature', signatureX, bottomSectionY + 35, { width: 180, align: 'center' });
 
         doc.font('Helvetica-Bold')
-           .fontSize(11)
-           .fillColor(textDark)
-           .text('Director of SkillSutra', signatureX, bottomSectionY + 50, { width: 180, align: 'center' });
+            .fontSize(11)
+            .fillColor(textDark)
+            .text('Director of SkillSutra', signatureX, bottomSectionY + 50, { width: 180, align: 'center' });
 
         // Add stamp image in the center
         const stampImagePath = path.resolve('assets/Stamp.png');
@@ -287,9 +295,9 @@ export const generateCertificate = async (req, res) => {
 
         // Footer verification text
         doc.font('Helvetica')
-           .fontSize(9)
-           .fillColor(textLight)
-           .text('This certificate can be verified online', centerX - 100, pageHeight - 30, { width: 200, align: 'center' });
+            .fontSize(9)
+            .fillColor(textLight)
+            .text('This certificate can be verified online', centerX - 100, pageHeight - 30, { width: 200, align: 'center' });
 
         // Finalize the PDF
         doc.end();
